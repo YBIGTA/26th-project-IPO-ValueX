@@ -8,28 +8,24 @@ from bs4 import BeautifulSoup
 from time import sleep
 
 class IpoCrawler:
-    def __init__(self, output_dir, driver_path, base_url):
+    def __init__(self, output_dir, base_url):
         self.output_dir = output_dir
-        self.driver_path = driver_path
         self.driver = None
         self.base_url = base_url
         self.collected_data = []
 
     def start_browser(self):
-        try:  # ChromeDriver 설정
+        try:
             options = webdriver.ChromeOptions()
+            # SSL 및 인증서 오류 무시 옵션 추가
             options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--ignore-ssl-errors=yes')
-            options.add_argument('--disable-web-security')
-            options.add_argument('--allow-insecure-localhost')
-            options.add_argument('--allow-running-insecure-content')
+            options.add_argument('--ignore-ssl-errors')
+            
+
+
             options.add_experimental_option("excludeSwitches", ["enable-automation"])
             options.add_experimental_option('useAutomationExtension', False)
-            options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.170 Safari/537.36')
-
-            
-            
-
+            options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36')
             self.driver = webdriver.Chrome(options=options)
             print("브라우저가 성공적으로 시작되었습니다.")
         except Exception as e:
@@ -37,29 +33,25 @@ class IpoCrawler:
             raise e
 
     def start(self):
-        self.start_browser()  # 브라우저 시작
+        self.start_browser()
         self.driver.get(self.base_url)
-        sleep(3)
+        sleep(5)  # 충분한 로딩 대기
         print(f"지정된 기업 목록 페이지에 접속했습니다.")
 
-        # 1. Selenium으로 페이지 소스 가져와 BeautifulSoup으로 파싱
         html_source = self.driver.page_source
         soup = BeautifulSoup(html_source, 'html.parser')
 
-        # 2. 기업명과 상세 링크 가져오기
         company_links = self.get_company_links(soup)
 
-        # 3. 각 기업 상세 페이지에 접속하여 크롤링
         for company_name, detail_link in company_links.items():
             print(f"{company_name} 크롤링 시작")
             self.crawl_company_details(company_name, detail_link)
 
-        # 데이터 저장
         self.save_to_json()
 
     def get_company_links(self, soup):
         company_links = {}
-        base_url = "http://www.ipostock.co.kr"  # 상대 링크를 절대 링크로 변환하기 위한 기본 URL
+        base_url = "http://www.ipostock.co.kr"
 
         rows = soup.select("tr[height='30'][align='center']")
         for row in rows:
@@ -68,9 +60,13 @@ class IpoCrawler:
                 if link_element:
                     company_name = link_element.text.strip()
                     relative_link = link_element['href']
-                    
-                    # 절대 URL로 변환
-                    absolute_link = base_url + relative_link if not relative_link.startswith("http") else relative_link
+                
+                    # 세부 링크에 schk=3 파라미터를 추가하여 완전한 링크 생성
+                    if relative_link.startswith("/view_pg"):
+                        absolute_link = f"{base_url}{relative_link}&schk=3"
+                    else:
+                        print(f"경로 변환 오류 발생 - {company_name}: {relative_link}")
+                        continue
 
                     company_links[company_name] = absolute_link
                     print(f"종목명: {company_name}, 링크: {absolute_link}")
@@ -78,10 +74,11 @@ class IpoCrawler:
                 print(f"종목 링크 추출 오류: {e}")
         return company_links
 
+
     def crawl_company_details(self, company_name, detail_link):
         try:
             self.driver.get(detail_link)
-            sleep(2)
+            sleep(3)
 
             company_data = {
                 company_name: {
@@ -104,7 +101,6 @@ class IpoCrawler:
                 }
             }
 
-            # 각 탭별 데이터 수집
             self.click_tab("수요예측")
             company_data[company_name]["수요예측"] = self.scrape_demand_forecast()
 
@@ -118,7 +114,6 @@ class IpoCrawler:
             company_data[company_name]["재무정보"] = self.scrape_financial_info()
 
             self.collected_data.append(company_data)
-
         except Exception as e:
             print(f"{company_name} 세부 정보 크롤링 중 오류 발생: {e}")
 
@@ -133,7 +128,7 @@ class IpoCrawler:
         if tab_url:
             current_url = self.driver.current_url
             code = current_url.split("code=")[-1].split("&")[0]
-            tab_link = f"http://www.ipostock.co.kr/sub03/{tab_url}?code={code}"
+            tab_link = f"http://www.ipostock.co.kr/{tab_url}?code={code}&schk=3"
             self.driver.get(tab_link)
             sleep(2)
 
@@ -205,14 +200,12 @@ class IpoCrawler:
         print(f"데이터가 {output_file}에 저장되었습니다.")
 
 if __name__ == "__main__":
-    driver_path = r"C:\WebDriver\chromedriver.exe"  # 크롬드라이버 경로 설정
     output_dir = os.path.join(os.getcwd(), "output")
-
-    # 직접 링크 입력
     base_url = input("크롤링할 URL을 입력하세요 (예: https://www.ipostock.co.kr/sub03/ipo08.asp?str1=&str4=2025&str5=2): ")
 
-    ipo_crawler = IpoCrawler(output_dir, driver_path, base_url=base_url)
-    ipo_crawler.start()
+    crawler = IpoCrawler(output_dir, base_url=base_url)
+    crawler.start()
+
 
 
 
