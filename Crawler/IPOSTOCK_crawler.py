@@ -4,7 +4,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
 from time import sleep
 
 class IpoCrawler:
@@ -17,12 +16,12 @@ class IpoCrawler:
     def start_browser(self):
         try:
             options = webdriver.ChromeOptions()
-            # SSL 및 인증서 오류 무시 옵션 추가
+            # SSL 및 보안 관련 옵션 설정
             options.add_argument('--ignore-certificate-errors')
             options.add_argument('--ignore-ssl-errors')
-            
-
-
+            options.add_argument('--allow-insecure-localhost')
+            options.add_argument('--disable-web-security')
+            options.add_argument('--disable-blink-features=AutomationControlled')
             options.add_experimental_option("excludeSwitches", ["enable-automation"])
             options.add_experimental_option('useAutomationExtension', False)
             options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36')
@@ -38,10 +37,8 @@ class IpoCrawler:
         sleep(5)  # 충분한 로딩 대기
         print(f"지정된 기업 목록 페이지에 접속했습니다.")
 
-        html_source = self.driver.page_source
-        soup = BeautifulSoup(html_source, 'html.parser')
-
-        company_links = self.get_company_links(soup)
+        # Selenium을 사용해 링크 수집
+        company_links = self.get_company_links()
 
         for company_name, detail_link in company_links.items():
             print(f"{company_name} 크롤링 시작")
@@ -49,31 +46,35 @@ class IpoCrawler:
 
         self.save_to_json()
 
-    def get_company_links(self, soup):
+    def get_company_links(self):
         company_links = {}
         base_url = "http://www.ipostock.co.kr"
 
-        rows = soup.select("tr[height='30'][align='center']")
-        for row in rows:
-            try:
-                link_element = row.select_one("a")
-                if link_element:
+        try:
+            rows = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "tr[height='30'][align='center']"))
+            )
+
+            for row in rows:
+                try:
+                    link_element = row.find_element(By.CSS_SELECTOR, "a")
                     company_name = link_element.text.strip()
-                    relative_link = link_element['href']
-                
-                    # 세부 링크에 schk=3 파라미터를 추가하여 완전한 링크 생성
-                    if relative_link.startswith("/view_pg"):
+                    relative_link = link_element.get_attribute("href")
+
+                    # 경로 보정: sub03 제거 및 view_pg 확인
+                    if "/view_pg" in relative_link:
+                        # schk=3 추가하여 최종 링크 생성
                         absolute_link = f"{base_url}{relative_link}&schk=3"
+                        company_links[company_name] = absolute_link
+                        print(f"종목명: {company_name}, 링크: {absolute_link}")
                     else:
-                        print(f"경로 변환 오류 발생 - {company_name}: {relative_link}")
-                        continue
+                        print(f"잘못된 링크: {company_name} - {relative_link}")
+                except Exception as e:
+                    print(f"종목 링크 추출 오류: {e}")
+        except Exception as e:
+            print(f"기업 목록 추출 오류: {e}")
 
-                    company_links[company_name] = absolute_link
-                    print(f"종목명: {company_name}, 링크: {absolute_link}")
-            except Exception as e:
-                print(f"종목 링크 추출 오류: {e}")
         return company_links
-
 
     def crawl_company_details(self, company_name, detail_link):
         try:
@@ -128,7 +129,7 @@ class IpoCrawler:
         if tab_url:
             current_url = self.driver.current_url
             code = current_url.split("code=")[-1].split("&")[0]
-            tab_link = f"http://www.ipostock.co.kr/{tab_url}?code={code}&schk=3"
+            tab_link = f"http://www.ipostock.co.kr/view_pg/{tab_url}?code={code}&schk=3"
             self.driver.get(tab_link)
             sleep(2)
 
@@ -202,9 +203,9 @@ class IpoCrawler:
 if __name__ == "__main__":
     output_dir = os.path.join(os.getcwd(), "output")
     base_url = input("크롤링할 URL을 입력하세요 (예: https://www.ipostock.co.kr/sub03/ipo08.asp?str1=&str4=2025&str5=2): ")
-
     crawler = IpoCrawler(output_dir, base_url=base_url)
     crawler.start()
+
 
 
 

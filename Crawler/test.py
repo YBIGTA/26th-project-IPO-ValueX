@@ -1,35 +1,34 @@
-from selenium import webdriver
-from time import sleep
+import requests
+import pandas as pd
 
-class SimpleIpoCrawler:
-    def __init__(self):
-        self.driver = None
+# API 키 설정
+api_key = "VHHQPXBUVGT6GL0SS90W"  # 발급받은 API 키를 입력하세요
 
-    def start_browser(self):
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36')
+# 통계표 코드 설정 (예: 기준금리)
+stat_code = "722Y001"  # 확인하려는 지표의 통계표 코드를 입력하세요
 
-        self.driver = webdriver.Chrome(options=options)
-        print("브라우저가 성공적으로 시작되었습니다.")
+# API 요청 URL 생성
+url = f"https://ecos.bok.or.kr/api/StatisticItemList/{api_key}/json/kr/1/100/{stat_code}"
 
-    def open_url(self, url):
-        try:
-            self.driver.get(url)
-            print(f"{url}에 정상적으로 접속했습니다.")
-            sleep(5)  # 페이지 로딩 대기
-        except Exception as e:
-            print(f"URL 접속 중 오류 발생: {e}")
-        finally:
-            self.driver.quit()
+# API 요청 보내기
+response = requests.get(url)
 
-if __name__ == "__main__":
-    crawler = SimpleIpoCrawler()
-    crawler.start_browser()
-    # 접속할 URL 입력
-    url = "http://www.ipostock.co.kr/sub03/ipo08.asp?str1=&str4=2025&str5=1"
-    crawler.open_url(url)
-
+# 응답 데이터 처리
+if response.status_code == 200:
+    data = response.json().get("StatisticItemList", {}).get("row", [])
+    if not data:
+        print("데이터가 없습니다. 통계표 코드를 확인하세요.")
+    else:
+        # 데이터프레임으로 변환
+        df = pd.DataFrame(data)
+        
+        # 필요한 열 선택 및 이름 변경
+        df = df[['ITEM_NAME', 'START_TIME', 'END_TIME']]
+        df.rename(columns={'ITEM_NAME': '항목명', 'START_TIME': '수집 시작일자', 'END_TIME': '수집 종료일자'}, inplace=True)
+        
+        # 결과 출력
+        print(df)
+else:
+    print("API 요청 실패:", response.status_code)
 
 
