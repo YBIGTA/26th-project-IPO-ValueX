@@ -1,1 +1,37 @@
+# 🔹 Python 관련 불필요한 파일
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.pyo
+
+# 🔹 가상 환경 (venv, virtualenv)
+venv/
+env/
+.venv/
+myvenv/
+
+# 🔹 IDE 설정 파일 (VS Code, PyCharm 등)
+.vscode/
+.idea/
+*.iml
+
+# 🔹 OS 관련 불필요한 파일
+.DS_Store
+Thumbs.db
+
+# 🔹 로그 & 캐시 파일
+*.log
+*.cache
+*.pytest_cache/
+
+# 🔹 Jupyter Notebook 체크포인트
+.ipynb_checkpoints/
+
+# 🔹 환경 설정 파일 (보안 관련)
+.env
+*.ini
+*.cfg
+
+
 IPO/
