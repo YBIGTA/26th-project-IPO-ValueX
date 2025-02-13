@@ -285,6 +285,12 @@ if __name__ == "__main__":
     print(f"총 {total_companies}개의 기업을 {batch_size}개씩 {total_batches}개의 배치로 처리합니다.")
 
     # 여기부터 시작!! 숫자 업데이트 수작업 ㅜㅜ
+    #----------------------
+    #이지 - 155-338
+    #재훈 - 339-522
+    #우제 - 523-706
+    #현운 - 707-890
+    #------------------------
     for batch_number in range(155, total_batches + 1):
         
         print(f"\n===== 배치 {batch_number}/{total_batches} 처리 시작 =====")
