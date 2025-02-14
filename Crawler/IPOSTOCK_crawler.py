@@ -16,6 +16,9 @@ import random
 from abc import ABC
 from typing import List, Optional, Dict
 
+import sort
+
+
 def load_company_data(json_file):
     with open(json_file, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -47,13 +50,6 @@ class IpostockCrawler(ABC):
         except Exception as e:
             print("ipostock 페이지 로딩 중 오류")
             raise
-
-    def random_sleep(self, base=2, jitter=3):
-        """랜덤한 대기 시간을 추가하여 요청 속도를 조절합니다."""
-        sleep_time = base + random.uniform(0, jitter)
-        print(f"⏳ 대기 중... {round(sleep_time, 2)}초")
-        time.sleep(sleep_time)
-
 
     def search_company(self, company: str):
 
@@ -293,6 +289,8 @@ class IpostockCrawler(ABC):
                 return "자본총계"
             elif "매출액" == label_clean:
                 return "매출액"
+            elif "영업수익" == label_clean:
+                return "영업수익"
             elif "영업이익" == label_clean:
                 return "영업이익"
             elif "당기순이익" == label_clean:
@@ -400,7 +398,7 @@ class IpostockCrawler(ABC):
 
     def run(self):
         try:
-            for json in ["KIND_data_2523.json","KIND_data_2220.json","KIND_data_1917.json","KIND_data_1614.json"]:
+            for json in ["KIND_Final_2523.json","KIND_Final_2220.json","KIND_Final_1917.json","KIND_Final_1614.json"]:
                 self.base_url="http://www.ipostock.co.kr/sub03/ipo08.asp?str4=2025&str5=all"
                 self.start_browser("./Finance_data/"+json)
 
@@ -412,6 +410,7 @@ class IpostockCrawler(ABC):
 
                 # 데이터 저장
                 self.save_to_database(data)
+                self.result=[]
                 self.driver.quit()
         finally:
             print("크롤링이 종료되었습니다.\n")
@@ -425,3 +424,6 @@ if __name__ == "__main__":
 
     crawler = IpostockCrawler(output_dir=output_directory)
     crawler.run()
+    import t
+    import combine
+
