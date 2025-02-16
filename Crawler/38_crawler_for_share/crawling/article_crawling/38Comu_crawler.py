@@ -27,7 +27,7 @@ class ForumCrawler:
         self.output_dir = output_dir
         self.batch_number = batch_number
         self.batch_size = batch_size
-        self.logger = setup_logger(log_file='./utils/38_Communication.log')
+        self.logger = setup_logger(log_file='./crawling/article_crawling/utils/38_Communication.log')
 
         if os.path.exists(file_directory):
             with open(file_directory, mode='r', encoding='utf-8') as file:
@@ -73,25 +73,23 @@ class ForumCrawler:
         
         base_url = "http://www.38.co.kr/"
         self.driver.get(base_url)
-        time.sleep(2)
+        WebDriverWait(self.driver,10).until(
+            EC.presence_of_all_elements_located((By.ID,"s_code"))
+        )
 
         self.siteurl: List[Dict] = []
         Not_found_Entity: List = []
 
         for corp in entities:
-            search_input = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.ID, "s_code"))
-            )
+            search_input = self.driver.find_element(By.ID, "s_code")
             search_input.clear()
             search_input.send_keys(corp)
             self.logger.info(f"Keyword '{corp}'")
 
-            search_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@type='image' and @alt='검색']"))
-            )
-
+            search_button = self.driver.find_element(By.XPATH, "//input[@type='image' and @alt='검색']")
             search_button.click()
-            time.sleep(3)
+            time.sleep(2)
+
 
             try:
                 # 해당 기업의 검색 결과가 있는지 체크
@@ -163,7 +161,9 @@ class ForumCrawler:
                 current_url = f"{Site}&page={page_num}"
                 self.driver.get(current_url)
                 self.logger.info(f"[{Corp}] page {page_num} loaded: {current_url}")
-                time.sleep(2)
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'list break')]"))
+                )
 
                 table = self.driver.find_element(By.XPATH, "/html/body/table[3]/tbody/tr/td/table[1]/tbody/tr/td[1]/table[3]")
                 posts = table.find_elements(By.TAG_NAME, "tr")
@@ -188,7 +188,7 @@ class ForumCrawler:
                     if title:
                         try:
                             link = cells[2].find_element(By.XPATH, './/a').get_attribute("href")
-                            time.sleep(2)
+                            # time.sleep(2)
                             self.driver.get(link)
 
                             body_elems = self.driver.find_elements(By.CSS_SELECTOR, 'span.readtext')
@@ -214,7 +214,9 @@ class ForumCrawler:
                     }
                     all_posts.append(post_data)
                     self.driver.back()
-                    time.sleep(1)
+                    WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'list break')]"))
+                    )
 
                 page_num += 1
 
@@ -265,8 +267,8 @@ class ForumCrawler:
 
 
 if __name__ == "__main__":
-    input_directory = os.path.join('../../database/KIND')
-    output_directory = '../../database/KIND'
+    input_directory = os.path.join('./database/KIND')
+    output_directory = './database/KIND'
     driver_executable_path = './chromedriver'
     
     batch_size = 1
@@ -291,7 +293,7 @@ if __name__ == "__main__":
     #우제 - 523-706
     #현운 - 707-890
     #------------------------
-    for batch_number in range(155, total_batches + 1):
+    for batch_number in range(611, total_batches + 1):  # 611: 에이텀
         
         print(f"\n===== 배치 {batch_number}/{total_batches} 처리 시작 =====")
         crawler = ForumCrawler(
