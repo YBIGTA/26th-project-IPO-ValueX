@@ -24,3 +24,4 @@ pykrx
 openpyxl
 requests
 PublicDataReader
+# image_ocr
