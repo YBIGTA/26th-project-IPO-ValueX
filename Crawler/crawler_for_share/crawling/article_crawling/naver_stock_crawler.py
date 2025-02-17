@@ -4,6 +4,8 @@ from crawling.article_crawling.utils.logger import setup_logger
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
 from typing import Dict, List
@@ -19,14 +21,14 @@ import random
 import schedule
 
 class NaverStockCrawler(BaseCrawler):
-    def __init__(self, output_dir:str, driver_path:str=None):
+    def __init__(self, output_dir:str):
         super().__init__(output_dir)
         self.base_url = "https://news.naver.com/breakingnews/section/101/258"
         self.driver = None
-        self.logger = setup_logger(log_file='./utils/naver_stock.log')
-        self.driver_path = driver_path
+        self.logger = setup_logger(log_file='./crawling/article_crawling/utils/naver_stock.log')
+        # self.driver_path = driver_path
         #----------------------------- 아예 파일명을 년도별로 분리해서 가도 좋을듯
-        self.output_file = os.path.join(self.output_dir, 'Naver_Stock.csv')
+        self.output_file = os.path.join(self.output_dir, 'Naver_Stock_2024.csv')
 
 
     def start_browser(self):
@@ -35,27 +37,31 @@ class NaverStockCrawler(BaseCrawler):
         chrome_options = Options()
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
         chrome_options.add_argument('--start-maximized')
+        self.driver=webdriver.Chrome(options=chrome_options)
+        self.logger.info('Browser initalized successfully!')
         
-        try:
-            if self.driver_path and os.path.exists(self.driver_path):
-                self.driver = webdriver.Chrome(
-                    service=Service(self.driver_path),
-                    options=chrome_options
-                )  
-            else:
-                self.driver = webdriver.Chrome()
-            self.logger.info('Browser initalized successfully!')
-        except Exception as e:
-            self.logger.info('Something gone wrong... Message below:')
-            self.logger.info(e)
-            sys.exit(1)
+        # try:
+        #     if self.driver_path and os.path.exists(self.driver_path):
+        #         self.driver = webdriver.Chrome(
+        #             service=Service(self.driver_path),
+        #             options=chrome_options
+        #         )  
+        #     else:
+        #         self.driver = webdriver.Chrome()
+            # self.logger.info('Browser initalized successfully!')
+        # except Exception as e:
+        #     self.logger.info('Something gone wrong... Message below:')
+        #     self.logger.info(e)
+        #     sys.exit(1)
 
     def scrape_articles(self, date):
         self.logger.info('Starting crawling process...')
         self.start_browser()
 
         self.driver.get(f"{self.base_url}?date={date}")
-        time.sleep(2)
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "section_article"))
+        )
 
         article_list = []
         self.detailed_articles = []
@@ -83,7 +89,9 @@ class NaverStockCrawler(BaseCrawler):
         for (title, press, link) in tqdm(article_list, desc='Scraping Details'):
             try:
                 self.driver.get(link)
-                time.sleep(2)
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "go_trans"))
+                )
                 # self.logger.info("글로 입장합니다.")
 
                 try:
@@ -179,16 +187,16 @@ class NaverStockCrawler(BaseCrawler):
                     start_date = datetime.datetime.strptime(str(latest_date), "%Y%m%d") + datetime.timedelta(days=1)
                     return start_date.strftime("%Y%m%d")
             #----------------------여기서 날짜 지정하시고 시작하시면 됩니다.
-            return "20140101"
+            return "20240613"
         else:
             return option
 
 
 def run_crawler():
-    output_dir = "../../database"
-    driver_path = "./chromedriver"
+    output_dir = "./database"
+    # driver_path = "./chromedriver"
 
-    crawler = NaverStockCrawler(output_dir, driver_path)
+    crawler = NaverStockCrawler(output_dir)
     start_date_str = crawler.set_start_data()
     start_date = datetime.datetime.strptime(start_date_str, "%Y%m%d")
 
