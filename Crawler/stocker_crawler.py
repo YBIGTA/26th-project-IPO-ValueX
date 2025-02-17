@@ -1,5 +1,5 @@
-from crawling.base_crawler import BaseCrawler
-from crawling.utils.logger import setup_logger
+from base_crawler import BaseCrawler
+from utils.logger import setup_logger
 
 from selenium.webdriver.chrome.webdriver import WebDriver
 
