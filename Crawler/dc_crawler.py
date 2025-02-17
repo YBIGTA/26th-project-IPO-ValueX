@@ -1,5 +1,5 @@
-from crawling.base_crawler import BaseCrawler
-from crawling.utils.logger import setup_logger
+from base_crawler import BaseCrawler
+from utils.logger import setup_logger
 
 from selenium.webdriver.chrome.webdriver import WebDriver
 
@@ -22,6 +22,8 @@ import json
 import random
 
 from image_ocr import process_image_ocr
+from argparse import ArgumentParser
+from typing import Dict, Type
 
 #-----------------------------------------
 config = ('-l  kor+kor_vert+eng')
@@ -33,7 +35,7 @@ proxy_list = [
 ]
 #-----------------------------------------
 
-class DcCrawler1(BaseCrawler):
+class DcCrawler(BaseCrawler):
     def __init__(self, output_dir: str, start_page: int = 1, end_page: int = 500, proxy: str = None):
         self.output_dir = output_dir
         self.start_page = start_page
@@ -42,7 +44,7 @@ class DcCrawler1(BaseCrawler):
         self.base_url_template = "https://gall.dcinside.com/mgallery/board/lists/?id=kospi&list_num=100&sort_type=N&exception_mode=recommend&search_head=&page={}"
         self.driver = None
         self.reviews: List[Dict[str, str]] = []
-        self.logger = setup_logger(log_file='./crawling/utils/dc.log')  # Logger 설정
+        self.logger = setup_logger(log_file='./utils/dc.log')  # Logger 설정
         self.proxy = None #random.choice(proxy_list) 
 
     
@@ -274,12 +276,12 @@ class DcCrawler1(BaseCrawler):
                     # ✅ 10개 이상이면 저장 실행 (for-loop 내부에서 실행)
                     if len(self.reviews) >= 10:
                         self.logger.info("📌 10개 단위로 저장 실행")
-                        self.save_to_database(page_num)
+                        self.save_to_database()
 
                 # ✅ for-loop 종료 후, 마지막 남은 데이터 저장
                 if self.reviews:  
                     self.logger.info("📌 마지막 남은 데이터 저장 실행")
-                    self.save_to_database(page_num)
+                    self.save_to_database()
 
             except Exception as e:
                 self.logger.error(f"리뷰 요소를 찾지 못했습니다: {e}")
@@ -288,7 +290,7 @@ class DcCrawler1(BaseCrawler):
         self.logger.info("크롤링 완료. 브라우저를 종료합니다.")
         self.browser.quit()
 
-    def save_to_database(self, page_num):
+    def save_to_database(self):
         """
         ✅ 10개 단위로 크롤링한 리뷰 데이터를 CSV 파일로 저장
         """
@@ -296,7 +298,7 @@ class DcCrawler1(BaseCrawler):
             self.logger.info("저장할 리뷰가 없습니다.")
             return
 
-        output_path = os.path.join(self.output_dir, f"dc_pages_{page_num}page.csv")
+        output_path = os.path.join(self.output_dir, f"dc_pages_final.csv")
 
         # ✅ DataFrame 변환 (컬럼 순서 지정)
         df = pd.DataFrame(self.reviews, columns=[
@@ -318,3 +320,20 @@ class DcCrawler1(BaseCrawler):
 
         # ✅ 저장 후 self.reviews 초기화 (메모리 절약)
         self.reviews.clear()
+
+# -----------------------
+# ✅ MAIN 실행부 추가
+# -----------------------
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('-o', '--output_dir', type=str, required=True, help="Output file directory.")
+    parser.add_argument('-s', '--start_page', type=int, default=1, help="Start page for crawling.")
+    parser.add_argument('-e', '--end_page', type=int, default=500, help="End page for crawling.")
+    args = parser.parse_args()
+
+    crawler = DcCrawler(output_dir=args.output_dir, start_page=args.start_page, end_page=args.end_page)
+    crawler.scrape_reviews()
+    crawler.save_to_database()
+
+
+
