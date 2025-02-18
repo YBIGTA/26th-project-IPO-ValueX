@@ -9,20 +9,23 @@ import re
 import json
 import tqdm
 
+def load_model(model_name, peft_model_dir):
+    base_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+
+    model = PeftModel.from_pretrained(base_model, peft_model_dir)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = model.to(device)
+    return model, tokenizer
+
 class NewsTokenizer:
     def __init__(self, peft_model_dir, dataset_file, output_file):
         self.peft_model_dir = peft_model_dir
         self.dataset_file = dataset_file
         self.output_file = output_file
-
-    def load_model(self):
-        base_model_name = 'google/mt5-large'
-        base_model = AutoModelForSeq2SeqLM.from_pretrained(base_model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(base_model_name, use_fast=False)
-
-        model = PeftModel.from_pretrained(base_model, self.peft_model_dir)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model = model.to(self.device)
+
+        self.model, self.tokenizer = load_model('google/mt5-large', peft_model_dir)
     
     def get_pooled_embedding(self, inputs, model):
         with torch.no_grad():
