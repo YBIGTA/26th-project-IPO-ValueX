@@ -5,11 +5,13 @@ from fastapi.staticfiles import StaticFiles
 import httpx
 
 from App.news.news_router import router as news_router
+from App.news.summary_router import router as summary_router
 from App.config import PORT
 
 app = FastAPI()
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(news_router)
+app.include_router(summary_router)
 
 async def run_preprocessing():
     await asyncio.sleep(3)

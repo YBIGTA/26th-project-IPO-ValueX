@@ -47,5 +47,7 @@ def run_semi_tfidf(news_file, category_files):
     
     for category, scores in category_scores.items():
         df[category] = scores  # 기존 df에 컬럼 추가
+    tfidf_columns = [col for col in df.columns if col.startswith('tfidf_')]
+    df = df[df[tfidf_columns].sum(axis=1) != 0]
     
     return df
