@@ -10,8 +10,8 @@ router = APIRouter(
 
 @router.post("/preprocess/news")
 def preprocess_news():
-    raw_path = '../../Non_Finance_data/Naver_Stock'
-    category_path = '../../Database/sector_vocab'
+    raw_path = os.path.join(os.getcwd(), "Non_Finance_data", "Naver_Stock")
+    category_path = os.path.join(os.getcwd(), "Database", "sector_vocab")
     files = [os.path.join(raw_path, file) for file in os.listdir(raw_path)]
     category_files = {file.split('.')[0]: os.path.join(category_path, file) for file in os.listdir(category_path)}
 
@@ -42,8 +42,9 @@ def preprocess_news():
                 if processed_news is not None:
                     if isinstance(processed_news, tuple):
                         processed_news = processed_news[0]
-                    
-                    records = preprocess_news.to_dict("records")
+                    print("---")
+                    records = processed_news.to_dict('records')
+                    print(len(records))
                     preprocessed_news_collection.insert_many(records)
 
                     n += len(processed_news)
@@ -51,7 +52,7 @@ def preprocess_news():
             except:
                 print(f"error occured in {cnt+1}th batch processing")
                 cnt += 1
-        
+
         print(f"Year: {file.split('.')[-2][-4:]} data saved to database. {len(df)} -> {n}")
         
     return {"message": "All data saved"}

@@ -37,15 +37,10 @@ def semi_tfidf(docs, category_vocab):
     
     return category_scores
 
-# 뉴스 데이터 로드 함수
-def load_news_data(file_path):
-    df = pd.read_csv(file_path)
-    return df
-
 # Semi TF-IDF 실행 함수
 def run_semi_tfidf(news_file, category_files):
+    df = news_file
     category_vocab = load_category_vocab(category_files)
-    df = load_news_data(news_file)
     docs = df['Body_processed'].astype(str).tolist()
     
     category_scores = semi_tfidf(docs, category_vocab)

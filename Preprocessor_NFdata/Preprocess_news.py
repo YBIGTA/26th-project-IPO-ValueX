@@ -38,6 +38,7 @@ def delete_body(df):
     pattern_stock_news = r"종목뉴스$"  
 
     # 특정 패턴을 포함하는 제목의 Body를 NaN으로 변경
+    df = df.copy()
     df.loc[df["Title"].str.match(pattern_public_notice, na=False), "Body_processed"] = np.nan
     df.loc[df["Title"].str.match(pattern_personnel_notice, na=False), "Body_processed"] = np.nan
     df.loc[df["Title"].str.match(pattern_table_notice, na=False), "Body_processed"] = np.nan
@@ -72,10 +73,11 @@ def remove_advertisements(df):
             df["Body"].astype(str).str.contains(ad_keywords[2], na=False)
 
     # 광고성 키워드 포함된 행을 NaN으로 변경 (하지만 기존 NaN은 유지)
+    df = df.copy()
     df.loc[mask, ["Title", "Body_processed"]] = np.nan
 
     # 본문에서 "◆ 새해 마켓레이더가 다양해집니다…" 이후 내용 삭제 (NaN 값은 유지)
-    df["Body_processed"] = df["Body"].astype(str).apply(lambda x: re.sub(r"◆ 새해 마켓레이더가 다양해집니다….*", "", x) if x != "nan" else x)
+    df.loc[:, "Body_processed"] = df["Body"].astype(str).apply(lambda x: re.sub(r"◆ 새해 마켓레이더가 다양해집니다….*", "", x) if x != "nan" else x)
 
     return df
 
@@ -188,10 +190,11 @@ def remove_special_characters(text):
     return re.sub(r"[^\w\s]", "", text)  # 특수문자 제거
 
 
-def run_preprocess_naver(input_file):
+def run_preprocess_naver(input_df):
     """네이버 뉴스 데이터 전처리 후 저장"""
     try:
-        df = pd.read_csv(input_file)
+        df = input_df
+        df = df.copy()
 
         df["Body_processed"] = df["Body"]
 
