@@ -42,9 +42,7 @@ def preprocess_news():
                 if processed_news is not None:
                     if isinstance(processed_news, tuple):
                         processed_news = processed_news[0]
-                    print("---")
                     records = processed_news.to_dict('records')
-                    print(len(records))
                     preprocessed_news_collection.insert_many(records)
 
                     n += len(processed_news)
