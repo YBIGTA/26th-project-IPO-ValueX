@@ -8,6 +8,12 @@ router = APIRouter(
 
 @router.post("/preprocess/news")
 def preprocess_news():
-    pass
     #TODO
+    '''
+    raw news: 로컬에서 받아오기
+    preprocessed news: MongoDB에 올리기
 
+    필요한 함수: 프로세싱 함수
+    '''
+    pass
+    
