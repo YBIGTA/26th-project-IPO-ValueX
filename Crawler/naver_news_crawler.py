@@ -25,7 +25,7 @@ class NaverStockCrawler(BaseCrawler):
         self.driver = None
         self.logger = setup_logger(log_file='./utils/naver_stock.log')
         self.driver_path = driver_path
-        self.output_file = os.path.join(self.output_dir, 'Naver_Stock_2022.csv')
+        self.output_file = os.path.join(self.output_dir, 'Naver_Stock_2021.csv')
 
 
     def start_browser(self):
@@ -54,7 +54,7 @@ class NaverStockCrawler(BaseCrawler):
         self.start_browser()
 
         self.driver.get(f"{self.base_url}?date={date}")
-        time.sleep(2)
+        time.sleep(1)
 
         article_list = []
         self.detailed_articles = []
@@ -82,7 +82,7 @@ class NaverStockCrawler(BaseCrawler):
         for (title, press, link) in tqdm(article_list, desc='Scraping Details'):
             try:
                 self.driver.get(link)
-                time.sleep(1)
+                time.sleep(0.7)
 
                 try:
                     body_elem = self.driver.find_element(By.CSS_SELECTOR, "article#dic_area")
@@ -175,7 +175,7 @@ class NaverStockCrawler(BaseCrawler):
                     latest_date = df['Date'].max()
                     start_date = datetime.datetime.strptime(str(latest_date), "%Y%m%d") + datetime.timedelta(days=1)
                     return start_date.strftime("%Y%m%d")
-            return "20220101"
+            return "20210101"
         else:
             return option
 
