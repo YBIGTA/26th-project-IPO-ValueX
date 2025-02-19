@@ -1,5 +1,5 @@
-from base_crawler import BaseCrawler
-from utils.logger import setup_logger
+from Crawler.base_crawler import BaseCrawler # 경로 절대 경로로 수정
+from Crawler.utils.logger import setup_logger
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -23,9 +23,9 @@ class NaverStockCrawler(BaseCrawler):
         super().__init__(output_dir)
         self.base_url = "https://news.naver.com/breakingnews/section/101/258"
         self.driver = None
-        self.logger = setup_logger(log_file='./utils/naver_stock.log')
+        self.logger = setup_logger(log_file='./Crawler/utils/naver_stock.log')
         self.driver_path = driver_path
-        self.output_file = os.path.join(self.output_dir, 'Naver_Stock_2021.csv')
+        self.output_file = os.path.join(self.output_dir, 'Naver_Stock_2025.csv')
 
 
     def start_browser(self):
@@ -165,6 +165,28 @@ class NaverStockCrawler(BaseCrawler):
             df.to_csv(self.output_file, index=False, encoding="utf-8-sig")
 
         self.logger.info(f"[INFO] Finished scraping | Path -> {self.output_file}")
+    
+    def save_to_mongodb(self):
+        """
+        📌 크롤링된 데이터를 MongoDB의 `raw_news_collection`에 저장 (crawler 모드에서만 실행)
+        """
+        if not self.detailed_articles:
+            self.logger.info('No articles to save')
+
+            if self.driver:
+                self.driver.quit()
+            return
+        
+        df = pd.DataFrame(self.detailed_articles)
+
+        # ✅ MongoDB에 저장 (raw_news_collection)
+        from Database.mongodb_connection import mongo_db  # MongoDB 연결 파일 임포트
+        raw_news_collection = mongo_db.raw_news  # MongoDB 컬렉션 선택
+
+        # MongoDB에 삽입
+        raw_news_collection.insert_many(df.to_dict('records'))
+
+        self.logger.info(f"[INFO] Finished scraping | {len(df)}개의 뉴스가 raw_news_collection에 저장됨")
 
     def set_start_data(self, option: str = None) -> str:
         if not option:
@@ -175,13 +197,12 @@ class NaverStockCrawler(BaseCrawler):
                     latest_date = df['Date'].max()
                     start_date = datetime.datetime.strptime(str(latest_date), "%Y%m%d") + datetime.timedelta(days=1)
                     return start_date.strftime("%Y%m%d")
-            return "20210101"
+            return "20250215"
         else:
             return option
 
-
-def run_crawler():
-    output_dir = "../Non_Finance_data"
+def run_crawler(save_to_db=False):
+    output_dir = "./Non_Finance_data/Naver_Stock"
     driver_path = "./chromedriver"
 
     crawler = NaverStockCrawler(output_dir, driver_path)
@@ -201,7 +222,12 @@ def run_crawler():
         current_date += datetime.timedelta(days=1)
         print(f"Current Date: {current_date}")
 
-    crawler.save_to_database()
+    if save_to_db:
+        crawler.save_to_mongodb()  # ✅ `save_to_db=True`일 때만 MongoDB 저장
+        crawler.save_to_database()  # ✅ 로컬 CSV에도 저장
+    else:
+        crawler.save_to_database()  # 기존 방식(CSV 저장)
+
     print(f"✅ Finished crawling: {start_date.strftime('%Y-%m-%d')} ~ {end_date.strftime('%Y-%m-%d')}")
 
 

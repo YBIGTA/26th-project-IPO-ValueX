@@ -19,9 +19,14 @@ typing_extensions==4.12.2
 urllib3==2.3.0
 websocket-client==1.8.0
 wsproto==1.2.0
+dnspython==2.2.1
 pandas
 pykrx
 openpyxl
 requests
 PublicDataReader
+pymongo
+konlpy
+mecab-python3
+mecab-ko-dic
 # image_ocr
