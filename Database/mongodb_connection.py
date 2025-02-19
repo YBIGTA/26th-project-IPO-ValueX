@@ -5,9 +5,10 @@ import os
 load_dotenv()
 
 mongo_uri = os.getenv("MONGODB_URI")
-mongo_client = MongoClient(mongo_uri)
+#TLS 옵션 추가
+mongo_client = MongoClient(mongo_uri, tls=True, tlsAllowInvalidCertificates=True)
 
-# 여기 고쳐야 함. 일단 테스트를 위해서 movie_review_db 를 가져온 것
-mongo_db = mongo_client["movie_review_db"]
+# 몰아넣은 새 db 정의
+mongo_db = mongo_client["Project_IPO_ValueX"]
 
-print(mongo_db.list_collection_names())
+print(f"✅ 현재 collection 리스트 : {mongo_db.list_collection_names()}")
