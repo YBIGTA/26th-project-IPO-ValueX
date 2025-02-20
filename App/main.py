@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 import httpx
 
 from App.news.news_router import router as news_router
-from App.news.summary_router import router as summary_router
+from App.news.news_processed_router import router as summary_router
 from App.finance.finance_router import router as finance_router
 from App.finance.finance_processed_router import router as finance_processed_router
 from App.config import PORT
