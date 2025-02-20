@@ -72,7 +72,7 @@ class NewsTokenizer:
             **inputs,
             max_length=256,
             min_length=128,
-            num_beams=5,
+            num_beams=3,
             early_stopping=True,
             no_repeat_ngram_size=3
         )
