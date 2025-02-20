@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # 해야할 것들
+# scp -P 포트번호 -r C:\Users\User\Documents\26th-project-IPO-ValueX root@IP:/workspace/ 로 데이터 전달
 # apt-get update && apt-get install -y git wget
 # pip install pandas tqdm scikit-learn transformers peft sentencepiece
 # cd /workspace/26th-project-IPO-ValueX/; ls 업로드 정상적인지 확인
