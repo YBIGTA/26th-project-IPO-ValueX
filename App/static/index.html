@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" id="login-screen">
+        <h1>User Management</h1>
+        <div class="section" id="login-section">
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email" required><br>
+                <div class="error" id="login-email-error"></div>
+                <input type="password" id="login-password" placeholder="Password" required><br>
+                <div class="error" id="login-password-error"></div>
+                <button type="button" onclick="loginUser()">Login</button>
+            </form>
+        </div>
+        <div class="section" id="register-section">
+            <h2>Register</h2>
+            <form id="register-form">
+                <input type="email" id="register-email" placeholder="Email" required><br>
+                <div class="error" id="register-email-error"></div>
+                <input type="password" id="register-password" placeholder="Password" required><br>
+                <div class="error" id="register-password-error"></div>
+                <input type="text" id="register-username" placeholder="Username" required><br>
+                <div class="error" id="register-username-error"></div>
+                <button type="button" onclick="registerUser()">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container" id="logged-in-screen" style="display: none;">
+        <h1>Welcome, <span id="username"></span></h1>
+        <div class="section" id="update-password-section">
+            <h2>Update Password</h2>
+            <form id="update-password-form">
+                <input type="password" id="update-password" placeholder="New Password" required><br>
+                <div class="error" id="update-password-error"></div>
+                <button type="button" onclick="updatePassword()">Update Password</button>
+            </form>
+        </div>
+
+        <div class="section" id="delete-section">
+            <h2>Delete Account</h2>
+            <button type="button" onclick="deleteUser()">Delete Account</button>
+        </div>
+    </div>
+
+    <script>
+        let userEmail = null;
+
+        // 로그인 함수: 이메일과 비밀번호를 받아서 로그인 시도
+        function loginUser() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
+            
+            let hasError = false;
+            document.getElementById("login-email-error").textContent = '';
+            document.getElementById("login-password-error").textContent = '';
+
+            // [변경 1] 이메일 형식 검증 코드(정규식 등)는 제거하고, 빈 값만 확인
+            if (!email) {
+                document.getElementById('login-email-error').textContent = "Email is required.";
+                hasError = true;
+            } else if (!emailRegEx.test(email)) {
+                document.getElementById('login-email-error').textContent = "Invalid email format.";
+                hasError = true;
+            }
+
+            if (!password) {
+                document.getElementById('login-password-error').textContent = "Password is required.";
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            fetch('/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => { throw new Error(error.detail); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(`Login successful! Welcome, ${data.data.username}.`);
+                userEmail = email; // 로그인 성공 시 이메일 저장
+                document.getElementById('username').textContent = `Hello, ${data.data.username}!`; // 사용자 이름 표시
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('logged-in-screen').style.display = 'block';
+            })
+            .catch(error => alert(`Login failed: ${error.message}`));
+        }
+
+        // 회원가입 함수: 이메일, 비밀번호, 사용자명을 받아서 회원가입 처리
+        function registerUser() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const username = document.getElementById('register-username').value;
+            const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
+
+            let hasError = false;
+            document.getElementById("register-email-error").textContent = '';
+            document.getElementById("register-password-error").textContent = '';
+            document.getElementById("register-username-error").textContent = '';
+
+            // [변경 2] 이메일 형식 검증을 없애고, 빈 값만 확인
+            if (!email) {
+                document.getElementById('register-email-error').textContent = "Email is required.";
+                hasError = true;
+            } else if (!emailRegEx.test(email)) {
+                document.getElementById('register-email-error').textContent = "Invalid email format.";
+                hasError = true;
+            }
+
+            if (!password) {
+                document.getElementById('register-password-error').textContent = "Password is required.";
+                hasError = true;
+            }
+
+            if (!username) {
+                document.getElementById('register-username-error').textContent = "Username is required.";
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            fetch('/api/user/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password, username })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => { throw new Error(error.detail); });
+                }
+                return response.json();
+            })
+            // [변경 3] .then(data => ...) 구조로 받아서 data를 안전하게 사용
+            .then(data => {
+                // 예: 서버가 { data: { username: "..."} } 형태로 응답한다 가정
+                alert(`Registration successful! Welcome, ${data.data.username}.`);
+            })
+            .catch(error => alert(`Registration failed: ${error.message}`));
+        }
+
+        // 비밀번호 업데이트 함수: 새 비밀번호를 받아서 업데이트 처리
+        function updatePassword() {
+            const newPassword = document.getElementById('update-password').value;
+
+            let hasError = false;
+            document.getElementById("update-password-error").textContent = '';
+
+            if (!newPassword) {
+                document.getElementById('update-password-error').textContent = "Password is required.";
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            fetch('/api/user/update-password', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: userEmail, new_password: newPassword })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // 응답이 OK가 아닐 경우, 오류 메시지를 JSON 형식으로 처리
+                    return response.text().then(errorText => {
+                        try {
+                            const error = JSON.parse(errorText); // JSON 파싱 시도
+                            throw new Error(error.detail || 'Unknown error');
+                        } catch (e) {
+                            // JSON 파싱 실패 시, 기본 오류 메시지 사용
+                            throw new Error('Password update failed: ' + errorText);
+                        }
+                    });
+                }
+                return response.json();
+            })
+            .then(() => alert(`Password successfully updated!`)) // 성공 메시지
+            .catch(error => alert(error.message)); // 상세 오류 메시지
+        }
+
+        // 계정 삭제 함수: 현재 로그인된 사용자의 계정을 삭제
+        function deleteUser() {
+            if (!userEmail) {
+                alert("No user is logged in.");
+                return;
+            }
+
+            fetch('/api/user/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: userEmail }) // 저장된 이메일 전송
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => { throw new Error(error.detail); });
+                }
+                return response.json();
+            })
+            .then(() => {
+                alert(`User deleted successfully!`);
+                document.getElementById('logged-in-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'block';
+                userEmail = null; // 이메일 초기화
+            })
+            .catch(error => alert(`Account deletion failed: ${error.message}`));
+        }
+    </script>
+</body>
+</html>

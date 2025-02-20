@@ -1,130 +1,161 @@
-import json
-import os
-import pandas as pd
-from tqdm import tqdm  # ✅ tqdm 추가
 from fastapi import APIRouter, HTTPException, Query
 from Database.mongodb_connection import mongo_db
-from LLM_modeling.vectorize.article_summarize import NewsTokenizer
+import os
+import time
+import pandas as pd
+import re
+from tqdm import tqdm  # ✅ tqdm 추가
+from Preprocessor_NFdata.Preprocess_news import run_preprocess_naver
+from Preprocessor_NFdata.Preprocess_tfidf import run_semi_tfidf
+# from Preprocessor_NFdata.Preprocess_tfidf_tokenized import run_tfidf
+from Crawler.naver_news_crawler import run_crawler
 
-# 🚀 FastAPI 라우터 생성
+# FastAPI 라우터 생성
 router = APIRouter(
-    prefix="/summary",
-    tags=["summary"]
+    prefix="/news",
+    tags=["news"]
 )
 
-@router.post("/summarize/data")
-def summarize_and_vectorize_news(mode: str = Query("db", description="실행 모드: 'local' 또는 'db'")):
+def extract_year_from_filename(filename):
+    """ 📌 파일명에서 YYYY 연도 추출하는 함수 """
+    match = re.search(r'(\d{4})', filename)  # 4자리 숫자 찾기
+    return int(match.group(1)) if match else None  # 찾으면 int 변환 후 반환, 없으면 None
+
+@router.post("/preprocess/news")
+def preprocess_news(
+    mode: str = Query("local", description="실행 모드: 'local' 또는 'crawler'"),
+    years: str = Query(None, description="처리할 연도 리스트 (쉼표로 구분된 문자열)")
+):
     """
-    📰 뉴스 문서를 요약하고 벡터화하여 MongoDB에 저장하는 API 엔드포인트.
+    📰 네이버 주식 뉴스 데이터를 전처리하고, 결과를 MongoDB에 저장하는 API 엔드포인트.
     
-    - **mode="local"** → 로컬 CSV 파일에서 뉴스 데이터를 불러와 요약 후 저장
-    - **mode="db"** → MongoDB에서 뉴스 데이터를 불러와 요약 후 저장
+    - **mode="local"** → 로컬 파일을 읽어서 전처리 후 DB에 저장
+    - **mode="crawler"** → 크롤러에서 바로 데이터를 받아서 전처리 후 DB에 저장
+    - **years="2022,2023"** → 특정 연도(YYYY)만 선택적으로 처리
     """
-    summary_collection = mongo_db.summary_and_vectors  # ✅ 요약 결과 저장할 MongoDB 컬렉션
-    news_tokenizer = NewsTokenizer(
-        peft_model_dir="LLM_modeling/finetuning/mt5_large_peft_final",
-        dataset_file="dummy",
-        output_file="LLM_modeling/backup/summary_backup.json"
-    )
+    preprocessed_news_collection = mongo_db.preprocessed_news  # 전처리된 뉴스 컬렉션
 
-    batch_size = 3  # 🔄 배치 크기 설정
-    batch_records = []  # 저장할 데이터 리스트
-    processed_count = 0  # ✅ 처리된 문서 개수
-    error_count = 0  # ❌ 에러 발생 문서 개수
-    duplicate_count = 0  # 🔄 중복된 데이터 개수
+    # 📌 선택한 연도 리스트 변환 (예: "2022,2023" → [2022, 2023])
+    selected_years = [int(year.strip()) for year in years.split(",")] if years else None
 
-    def convert_oid(record):
-        """MongoDB ObjectId를 문자열로 변환"""
-        rec = record.copy()
-        rec["_id"] = str(rec["_id"])
-        return rec
+    if mode == "local":
+        # 📌 로컬 파일 모드
+        raw_path = os.path.join(os.getcwd(), "Non_Finance_data", "Naver_Stock")  # 원본 뉴스 데이터 경로
+        files = [os.path.join(raw_path, file) for file in os.listdir(raw_path)]
 
-    if mode == "db":
-        # ✅ MongoDB에서 뉴스 데이터 가져오기
-        doc_collection = mongo_db.preprocessed_news
-        documents = list(doc_collection.find())  # ✅ 리스트로 변환하여 tqdm 적용 가능하게 만듦
-
-    elif mode == "local":
-        # ✅ 로컬 CSV에서 데이터 불러오기
-        raw_path = os.path.join(os.getcwd(), "Non_Finance_data", "Naver_Stock")
-        files = [os.path.join(raw_path, file) for file in os.listdir(raw_path) if file.endswith('.csv')]
+        category_path = os.path.join(os.getcwd(), "Database", "sector_vocab")  # 산업별 단어 사전 경로
+        category_files = {file.split('.')[0]: os.path.join(category_path, file) for file in os.listdir(category_path)}
 
         if not files:
-            raise HTTPException(status_code=404, detail=f"No news files found in {raw_path}")
+            raise HTTPException(status_code=404, detail=f"No raw news found in '{raw_path}'")
 
-        all_data = []
         for file in files:
-            df = pd.read_csv(file, encoding="utf-8-sig", on_bad_lines="skip")
-            all_data.extend(df.to_dict('records'))
+            file_year = extract_year_from_filename(file)  # 📌 연도 추출
 
-        documents = all_data  # ✅ MongoDB에서 읽은 데이터처럼 리스트 형태로 변환
-
-    else:
-        raise HTTPException(status_code=400, detail="잘못된 모드입니다. 'local' 또는 'db'를 선택하세요.")
-
-    # 🔍 문서 순회하며 요약 및 벡터화 진행 (✅ tqdm 적용)
-    for doc in tqdm(documents, desc="Processing news summarization", unit="doc"):
-        doc_id = doc.get("Link", None)  # ✅ `_id`를 `Link` 값으로 설정
-        if not doc_id:
-            continue  # `_id`가 없으면 스킵
-
-        if summary_collection.find_one({"_id": doc_id}):
-            duplicate_count += 1  # ✅ 중복 개수 증가
-            continue  # 이미 처리된 문서는 스킵
-
-        try:
-            article = doc.get("Body_processed", "") if mode == "db" else doc.get("Body", "")
-            if not isinstance(article, str) or not article.strip():
-                print(f"⚠️ Invalid or empty 'Body_processed' in document with _id {doc_id}. Skipping.")
+            # 🛑 연도를 찾지 못하면 스킵
+            if file_year is None:
+                print(f"⏩ Skipping {file} (Year: None)")
                 continue
 
-            entity = {
-                "id": str(doc_id),
-                "article": article
-            }
-            result = news_tokenizer.summarize_and_tokenize(entity)  # 🔄 뉴스 요약 및 벡터화
-            result["_id"] = doc_id  # ✅ `_id`를 `Link` 값으로 설정
+            # 🛑 연도가 선택된 years 리스트에 없으면 스킵
+            if selected_years and file_year not in selected_years:
+                print(f"⏩ Skipping {file} (Year: {file_year})")
+                continue
 
-            batch_records.append(result)
-            processed_count += 1
+            print(f"✅ Processing {file} (Year: {file_year})")
 
-            # ✅ 배치 크기에 도달하면 DB에 저장
-            if len(batch_records) >= batch_size:
-                for record in batch_records:
-                    summary_collection.update_one(
-                        {"_id": record["_id"]},
-                        {"$set": record},
-                        upsert=True
-                    )
-                with open(news_tokenizer.output_file, "a", encoding="utf-8") as f:
-                    backup_records = [convert_oid(rec) for rec in batch_records]
-                    json.dump(backup_records, f, ensure_ascii=False, indent=4)
-                    f.write("\n")
-                batch_records = []
+            df = pd.read_csv(file, encoding='utf-8-sig', on_bad_lines="skip")
+            try:
+                _ = run_preprocess_naver(df)
+                processed_news = run_semi_tfidf(_, category_files)
+                
+                if processed_news is not None:
+                    if isinstance(processed_news, tuple):
+                        processed_news = processed_news[0]
+                    
+                    # ✅ `_id`를 `Link` 값으로 설정하여 중복 방지
+                    records = [{**record, "_id": record["Link"]} for record in processed_news.to_dict('records')]
 
-        except Exception as e:
-            print(f"❌ Error processing document with _id {doc_id} - {e}")
-            error_count += 1
-            continue
+                    saved_count = 0  # 저장된 데이터 개수
+                    duplicate_count = 0  # 중복으로 저장되지 않은 데이터 개수
 
-    # 🔄 남은 배치 데이터 처리
-    if batch_records:
-        for record in batch_records:
-            summary_collection.update_one(
-                {"_id": record["_id"]},
-                {"$set": record},
-                upsert=True
-            )
-        with open(news_tokenizer.output_file, "a", encoding="utf-8") as f:
-            backup_records = [convert_oid(rec) for rec in batch_records]
-            json.dump(backup_records, f, ensure_ascii=False, indent=4)
-            f.write("\n")
+                    # ✅ tqdm으로 저장 진행률 표시 & 중복 방지 처리
+                    for record in tqdm(records, desc=f"Saving {file} to MongoDB", unit="doc"):
+                        existing_count = preprocessed_news_collection.count_documents({"_id": record["_id"]})
 
-    print(f"✅ 요약 완료: 총 {len(documents)}개 중 {processed_count}개 저장됨, {duplicate_count}개 중복으로 저장 안됨")
+                        if existing_count == 0:
+                            preprocessed_news_collection.insert_one(record)
+                            saved_count += 1
+                        else:
+                            duplicate_count += 1  # 중복 데이터 개수 증가
 
-    return {
-        "message": f"✅ Summarization and vectorization completed using mode: {mode}",
-        "processed": processed_count,
-        "duplicates": duplicate_count,
-        "errors": error_count
-    }
+                    print(f"✅ {file} processed: 총 {len(df)}개 중 {saved_count}개 저장됨, {duplicate_count}개 중복으로 저장 안됨")
+                else:
+                    print(f"⚠️ {file} processed: 전처리된 데이터 없음")
+            except Exception as e:
+                print(f"⚠️ {file} 처리 중 오류 발생: {e}")
+
+    elif mode == "crawler":
+
+        category_path = os.path.join(os.getcwd(), "Database", "sector_vocab")  # 산업별 단어 사전 경로
+        category_files = {file.split('.')[0]: os.path.join(category_path, file) for file in os.listdir(category_path)}
+
+        # ✅ 크롤러 실행 및 MongoDB 저장
+        print("🚀 크롤러를 실행하여 네이버 뉴스를 수집합니다...")
+        run_crawler(save_to_db=True)
+
+        raw_news_collection = mongo_db.raw_news
+
+        # ✅ DB 반영 대기 (최대 30초)
+        timeout = 30
+        elapsed = 0
+        while raw_news_collection.count_documents({}) == 0 and elapsed < timeout:
+            print("⏳ Waiting for MongoDB to reflect raw_news data...")
+            time.sleep(2)
+            elapsed += 2
+
+        if raw_news_collection.count_documents({}) == 0:
+            raise HTTPException(status_code=500, detail="⛔ 크롤러 실행 후에도 raw_news에 데이터가 없음")
+
+        # ✅ MongoDB에서 `raw_news` 가져오기
+        raw_data = list(raw_news_collection.find())
+
+        if not raw_data:
+            raise HTTPException(status_code=500, detail="⛔ raw_news에서 데이터를 가져오지 못함")
+
+        print(f"✅ raw_news 데이터 개수: {len(raw_data)}개")
+
+        # ✅ `_id`를 `Link` 값으로 설정하여 중복 방지
+        for record in raw_data:
+            record["_id"] = record["Link"]
+
+        # ✅ 전처리 및 TF-IDF 적용
+        _ = run_preprocess_naver(pd.DataFrame(raw_data))
+        processed_news = run_semi_tfidf(_, category_files)
+
+        if processed_news is not None:
+            if isinstance(processed_news, tuple):
+                processed_news = processed_news[0]
+
+            records = [{**record, "_id": record["Link"]} for record in processed_news.to_dict('records')]
+
+            saved_count, duplicate_count = 0, 0
+
+            for record in tqdm(records, desc="Saving processed news to MongoDB", unit="doc"):
+                if preprocessed_news_collection.count_documents({"_id": record["_id"]}) == 0:
+                    preprocessed_news_collection.insert_one(record)
+                    saved_count += 1
+                else:
+                    duplicate_count += 1
+
+            print(f"✅ 전처리 완료: 총 {len(raw_data)}개 중 {saved_count}개 저장됨, {duplicate_count}개 중복으로 저장 안됨")
+
+        # ✅ raw_news 컬렉션 삭제
+        print("🗑️ Deleting raw_news collection...")
+        raw_news_collection.drop()
+        print("✅ raw_news 컬렉션 삭제 완료!")
+
+    else:
+        raise HTTPException(status_code=400, detail="잘못된 모드입니다. 'local' 또는 'crawler'를 선택하세요.")
+
+    return {"message": f"✅ News processing completed using mode: {mode}, years: {selected_years}"}
