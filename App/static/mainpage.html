@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> Moon Walking main page </title>
+        <link rel = "stylesheet" type = "text/css" href = "main.css">
+    </head>
+    <body>
+
+        <div id = "air" style = "display: none;"></div>
+        <div id = "phase" style = "display: none;"></div>
+        <div id = "weather" style = "display: none;"></div>
+
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <div class="navheader">
+                    <a href = "mainpage.html" class = "tomain" id="now" ></a>
+                    <a href = "get_value.html" class = "tovalue" ></a>
+                    <a href = "suggest_news.html" class = "tosuggestnews"></a>
+                    <a href = "community.html" class = "tocommunity"></a>
+                </div>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="mainpage">
+                <h3 class="mainpageheader">IPO_ValueX</h3>
+                <div class="main1">   
+                    <div id="contain_moon" style="text-align:center;padding-top:5px;padding-bottom:5px;">
+                        <div style="font-weight:bold">The moon today</div>
+                        <div style="margin-top:-7px;margin-bottom:-15px;padding:30px;filter:drop-shadow(0 0 30px hsl(220,100%,15%))"></div>
+                        <div>.</div>
+                        <div style="font-size:small">.</div>
+                    </div>
+                </div>
+                <div id = "invisible" style = "display: none"></div>
+                <div class="mainx">
+                    <!--현재위치 정보 받기, 현재 상태 출력-->
+                    <span id="verdict"> <br> 로딩중... <br> </span><br>
+                    <br>
+                    <div class="mainbox">
+                        <div>
+                            <button type="button" onclick="location.href='get_value.html'" class = "mainbutton">수익률 예측 바로가기</button>
+                            <button type="button" onclick="location.href='community.html'" class = "mainbutton">게시판 바로가기</button>
+                            <button type="button" onclick="location.href='suggest_news.html'"  class = "mainbutton">산업군별 요약뉴스 알아보기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <script src="moon.js"></script>
+        </main>
+        <footer>
+            
+        </footer>
+        <!--<footer class="madeby">
+            <p>김이지 노예준 박성용</p>
+        </footer>-->
+    </body>
+
+    <script>
+        window.addEventListener("load", ()=>{
+            setTimeout(()=>{
+                let a = parseInt(document.getElementById("air").innerHTML);
+                let p = parseInt(document.getElementById("phase").innerHTML);
+                let w = JSON.parse(document.getElementById("weather").innerHTML);
+                let score;
+                if (a*p*w.score != 0){
+                    score = a + p + w.score;
+                } else {
+                    score = 0;
+                }
+
+                console.log(a);
+                let v = `오늘의 점수는... ${score}/10점! <br>`;
+
+                if(score == 0) {
+                    v += "<b>오늘은 달이 보이지 않아요...</b>";
+                } else if (score < 4) {
+                    v += "<b>달이 잘 안 보일 수도 있어요..!</b>";
+                } else if(score < 7) {
+                    v += "<b>달이 어느정도 보일 거예요!</b>"
+                } else if (score  < 9) {
+                    v += "<b>달 사진 찍기 괜찮은 날이에요!</b>";
+                } else {
+                    v += "<b>달 사진 찍기 최고의 날이에요!!</b>";
+                }
+
+                v += "<br>" + w.state;
+
+                document.getElementById("verdict").innerHTML = v;
+
+            }, 5000) // 솔직히 논리상 개에바인데 인터넷만 빠르면 왠만하면 될거임
+        })
+    </script>
+
+</html>
