@@ -25,8 +25,9 @@ pykrx
 openpyxl
 requests
 PublicDataReader
+<<<<<<< HEAD
 pymongo
 konlpy
 mecab-python3
 mecab-ko-dic
-# image_ocr
+=======
