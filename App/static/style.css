@@ -1,0 +1,85 @@
+/* 전체 페이지 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center;
+    background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fG5hdHVyZXxlbnwwfHx8fDE2ODM5MjMwNTQ&ixlib=rb-1.2.1&q=80&w=1920');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #333;
+}
+
+/* 컨테이너 스타일 */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+h1 {
+    color: #4CAF50;
+}
+h2 {
+    color: #5D5C61;
+}
+
+/* 폼 스타일 */
+form {
+    margin: 20px 0;
+}
+
+/* 입력 필드 스타일 */
+input {
+    padding: 12px;
+    margin: 10px 0;
+    width: 90%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #f9d342;
+}
+
+/* 버튼 스타일 */
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45A049;
+}
+
+/* 섹션 스타일 */
+.section {
+    margin-bottom: 30px;
+}
+
+/* 로그인 후 화면 숨김 */
+#logged-in-screen {
+    display: none;
+}
+
+/* 에러 메시지 스타일 */
+.error {
+    color: #f08080;
+    font-size: 0.9em;
+    margin: -5px 0 10px 0;
+}
