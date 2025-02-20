@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title> Moon Walking main page </title>
+        <title> IPO_ValueX </title>
         <link rel = "stylesheet" type = "text/css" href = "main.css">
     </head>
     <body>
@@ -56,45 +56,11 @@
         <footer>
             
         </footer>
-        <!--<footer class="madeby">
-            <p>김이지 노예준 박성용</p>
-        </footer>-->
+
     </body>
 
     <script>
-        window.addEventListener("load", ()=>{
-            setTimeout(()=>{
-                let a = parseInt(document.getElementById("air").innerHTML);
-                let p = parseInt(document.getElementById("phase").innerHTML);
-                let w = JSON.parse(document.getElementById("weather").innerHTML);
-                let score;
-                if (a*p*w.score != 0){
-                    score = a + p + w.score;
-                } else {
-                    score = 0;
-                }
 
-                console.log(a);
-                let v = `오늘의 점수는... ${score}/10점! <br>`;
-
-                if(score == 0) {
-                    v += "<b>오늘은 달이 보이지 않아요...</b>";
-                } else if (score < 4) {
-                    v += "<b>달이 잘 안 보일 수도 있어요..!</b>";
-                } else if(score < 7) {
-                    v += "<b>달이 어느정도 보일 거예요!</b>"
-                } else if (score  < 9) {
-                    v += "<b>달 사진 찍기 괜찮은 날이에요!</b>";
-                } else {
-                    v += "<b>달 사진 찍기 최고의 날이에요!!</b>";
-                }
-
-                v += "<br>" + w.state;
-
-                document.getElementById("verdict").innerHTML = v;
-
-            }, 5000) // 솔직히 논리상 개에바인데 인터넷만 빠르면 왠만하면 될거임
-        })
     </script>
 
 </html>
