@@ -23,7 +23,7 @@ if [ ! -d "$MODEL_DIR" ]; then
 fi
 
 # 2014년부터 2025년까지 반복 실행
-for year in {2014..2025}
+for year in {2015..2019}
 do
     echo "처리 시작: $year 년도"
     python3 "$SCRIPT_FILE" --select_year "$year" --peft_model_dir "$MODEL_DIR"
