@@ -58,7 +58,7 @@ class NewsTokenizer:
         """
         model = self.model
 
-        article = entity['article']
+        article = entity['Body_processed']
         inputs = self.tokenizer(
             article,
             return_tensors='pt',
