@@ -25,3 +25,6 @@ curl -X 'POST' 'http://127.0.0.1:8000/summary/summarize/data?mode=db' -H 'accept
 curl -X POST "http://127.0.0.1:8000/finance/upload"
 5-2. 재무 데이터 전처리해서 병합 실행(db 다운 모드- 다른 모드 안 만듦)
 curl -X POST "http://127.0.0.1:8000/finance/processed/process"
+
+
+# 나중에 시간되면 modeling 폴더랑 preprocessing 폴더로 정리해서 넣읍시다.
