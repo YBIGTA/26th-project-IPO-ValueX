@@ -183,11 +183,11 @@ def preprocess_body(text):
 #  특수문자 제거
 
 def remove_special_characters(text):
-    """특수문자를 제거하는 함수"""
+    """특수문자를 제거하되, 마침표(.)는 유지하는 함수"""
     if not isinstance(text, str):  
         return text  # NaN 또는 숫자인 경우 원래 값 반환
     
-    return re.sub(r"[^\w\s]", "", text)  # 특수문자 제거
+    return re.sub(r"[^\w\sㄱ-ㅎ가-힣.]", "", text)  # 마침표(.) 유지
 
 
 def run_preprocess_naver(input_df):
