@@ -1,3 +1,5 @@
+Finance_data/processed_Fdata/df_final.csv
+
 # 🔹 Python 관련 불필요한 파일
 __pycache__/
 *.py[cod]
