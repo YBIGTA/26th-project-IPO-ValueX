@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import os
 
-def process_daily(output_csv="df_daily.csv"):
+def run_process_daily(output_csv="df_daily.csv"):
     file_names = [
         "KOSPI_1001.json", "KOSPI_1005.json", "KOSPI_1008.json", 
         "KOSPI_1011.json", "KOSPI_1012.json", "KOSPI_1013.json",
@@ -31,8 +31,11 @@ def process_daily(output_csv="df_daily.csv"):
     merged_df["year_key"] = pd.to_datetime(merged_df["date"]).dt.year
     merged_df["month_key"] = pd.to_datetime(merged_df["date"]).dt.strftime("%Y-%m")
 
-    merged_df.to_csv(output_csv, index=False, encoding="utf-8-sig")
+    # merged_df.to_csv(output_csv, index=False, encoding="utf-8-sig")
     print(f"✅ {output_csv} 생성 완료!")
 
-if __name__ == "__main__":
-    process_daily()
+    return merged_df
+
+
+# if __name__ == "__main__":
+#     run_process_daily()

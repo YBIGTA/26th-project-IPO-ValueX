@@ -2,6 +2,10 @@ from fastapi import APIRouter, HTTPException
 import os
 import json
 from Database.mongodb_connection import mongo_db
+from Preprocessor_Fdata.Preprocess_ipostock import run_process_ipostock
+from Preprocessor_Fdata.Preprocess_daily import run_process_daily
+from Preprocessor_Fdata.Preprocess_monthly import run_process_monthly
+
 
 # 🚀 FastAPI 라우터 생성
 router = APIRouter(

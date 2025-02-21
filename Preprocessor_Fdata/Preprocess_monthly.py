@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import os
 
-def process_monthly(output_csv="df_monthly.csv"):
+def run_process_monthly(output_csv="df_monthly.csv"):
     file_names = [
         "KOREA_국고채_금리_(3년).json", "KOREA_국고채_금리_(10년).json", 
         "KOREA_기업경기실사지수(BSI).json", "KOREA_기준금리.json",
@@ -26,8 +26,10 @@ def process_monthly(output_csv="df_monthly.csv"):
 
     merged_df = merged_df.sort_values(by="날짜").reset_index(drop=True)
     merged_df["month_key"] = pd.to_datetime(merged_df["날짜"], format="%Y%m").dt.strftime("%Y-%m")
-    merged_df.to_csv(output_csv, index=False, encoding="utf-8-sig")
+    # merged_df.to_csv(output_csv, index=False, encoding="utf-8-sig")
     print(f"✅ {output_csv} 생성 완료!")
 
-if __name__ == "__main__":
-    process_monthly()
+    return merged_df
+
+# if __name__ == "__main__":
+#     run_process_monthly()

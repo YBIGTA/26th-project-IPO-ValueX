@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import re
 
-def process_ipostock(input_json="IPOSTOCK_data.json", output_csv="X_stat.csv"):
+def run_process_ipostock(input_json="IPOSTOCK_data.json", output_csv="X_stat.csv"):
     with open(input_json, "r", encoding="utf-8-sig") as file:
         json_data = json.load(file)
 
@@ -29,8 +29,10 @@ def process_ipostock(input_json="IPOSTOCK_data.json", output_csv="X_stat.csv"):
                 data_list.append(row)
 
     df = pd.DataFrame(data_list)
-    df.to_csv(output_csv, index=False, encoding="utf-8-sig")
+    # df.to_csv(output_csv, index=False, encoding="utf-8-sig")
     print(f"✅ {output_csv} 생성 완료!")
 
-if __name__ == "__main__":
-    process_ipostock()
+    return df
+
+# if __name__ == "__main__":
+#     run_process_ipostock()

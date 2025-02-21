@@ -1,3 +1,6 @@
+#용량 이슈
+Finance_data/Fdata/df_final.csv
+
 # 🔹 Python 관련 불필요한 파일
 __pycache__/
 *.py[cod]

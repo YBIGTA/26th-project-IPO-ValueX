@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 import pandas as pd
 from Database.mongodb_connection import mongo_db
-from Preprocessor.Preprocess_finance import run_preprocess_finance  # 📌 데이터 가공 함수
+from Preprocessor_Fdata.Preprocess_merge_date import run_merge_date_data
+from Preprocessor_Fdata.Preprocess_finanace_final import run_merge_final_data
 
 # 🚀 FastAPI 라우터 생성
 router = APIRouter(
@@ -27,11 +28,19 @@ def process_and_store_finance_data():
         raise HTTPException(status_code=404, detail="⚠️ 하나 이상의 금융 데이터가 존재하지 않음")
 
     # 🏦 데이터 가공 (Processing 함수 적용)
-    processed_data = run_preprocess_finance(ipostock_data, finance_by_month, finance_by_date)
+    merged_date_data = run_merge_date_data(finance_by_date,finance_by_month)
+    # ✅ DataFrame 변환 후 MongoDB 저장
+    finance_summary_collection = mongo_db.Finance_processed_date
+    processed_df = pd.DataFrame(merged_date_data)  # 🔄 DataFrame 변환
+    finance_summary_collection.insert_many(processed_df.to_dict("records"))  # 💾 MongoDB 저장
 
+    finance_by_date_month = list(mongo_db.Finance_processed_date.find())
+
+    # 🏦 데이터 가공 (Processing 함수 적용)
+    final_finance_data = run_merge_final_data(finance_by_date_month,ipostock_data)
     # ✅ DataFrame 변환 후 MongoDB 저장
     finance_summary_collection = mongo_db.finance_processed
-    processed_df = pd.DataFrame(processed_data)  # 🔄 DataFrame 변환
-    finance_summary_collection.insert_many(processed_df.to_dict("records"))  # 💾 MongoDB 저장
+    processed_df_final = pd.DataFrame(merged_date_data)  # 🔄 DataFrame 변환
+    finance_summary_collection.insert_many(processed_df_final.to_dict("records"))  # 💾 MongoDB 저장
 
     return {"message": "✅ 금융 데이터 통합 처리 완료", "processed_records": len(processed_df)}
