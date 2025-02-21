@@ -159,11 +159,24 @@ def group_and_clean_data(data):
 def create_kote_input(data):
     return [{"기업명": company_data["기업명"], "텍스트": post["텍스트"], "날짜": post["날짜"], "조회": post["조회"], "추천": post["추천"]} for company_data in data for post in company_data["글목록"]]
 
+def run_preprocess_38(input_data, kind_data):
+    
+    filtered_data = filter_by_date(input_data, kind_data)
+    transformed_data = transform_text(filtered_data)
+    grouped_data = group_and_clean_data(transformed_data)
+    kote_input_data = create_kote_input(grouped_data)
+
+    print("✅ 전체 전처리 완료! 결과 파일: 38_KOTE_Input.json")
+    
+    return kote_input_data
+
+
+
 # ✅ 전체 전처리 실행
 if __name__ == "__main__":
-    with open("38_ver1.json", "r", encoding="utf-8") as f:
+    with open("Non_Finance_data/38/38_ver1.json", "r", encoding="utf-8") as f:
         input_data = json.load(f)
-    with open("KIND_38.json", "r", encoding="utf-8") as f:
+    with open("Non_Finance_data/38/KIND_38.json", "r", encoding="utf-8") as f:
         kind_data = json.load(f)
     
     filtered_data = filter_by_date(input_data, kind_data)
@@ -175,3 +188,4 @@ if __name__ == "__main__":
         json.dump(kote_input_data, f, ensure_ascii=False, indent=4)
     
     print("✅ 전체 전처리 완료! 결과 파일: 38_KOTE_Input.json")
+

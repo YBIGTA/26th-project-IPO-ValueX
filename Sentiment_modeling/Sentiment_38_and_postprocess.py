@@ -243,6 +243,18 @@ def process_daily_average(final_results):
     
     return processed_results
 
+def run_38_sentiment_ver1():
+    results = run_sentiment_analysis()
+    results = fe1_processing(results)
+    final_results = fe2_processing(results)
+
+    return final_results
+
+def run38_sentiment_ver2():
+    final_results = run_38_sentiment_ver1()
+    final_results_avg = process_daily_average(final_results)
+
+    return final_results_avg
 
 # ✅ 전체 실행
 if __name__ == "__main__":
