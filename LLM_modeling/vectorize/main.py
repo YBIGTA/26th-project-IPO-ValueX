@@ -20,6 +20,9 @@ def init_worker(peft_model_dir):
 def process_news_entity(news_entity):
     """단일 뉴스 엔티티를 처리하는 함수"""
     global global_tokenizer_instance
+    worker_id = int(os.getpid()) % torch.cuda.device_count()
+    torch.cuda.set_device(worker_id)
+    print(f"Worker {os.getpid()} assigned to GPU {worker_id}")
     return global_tokenizer_instance.summarize_and_tokenize(news_entity)
 
 def main():

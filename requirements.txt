@@ -19,7 +19,7 @@ typing_extensions==4.12.2
 urllib3==2.3.0
 websocket-client==1.8.0
 wsproto==1.2.0
-dnspython==2.2.1
+dnspython==2.2.1 #2.2.1 안됨?
 pandas
 pykrx
 openpyxl
