@@ -9,6 +9,7 @@ from App.finance.finance_processed_router import router as finance_router
 from App.finance.finance_merge_processed_router import router as finance_merge_router
 from App.community_38.community_38_router import router as community_38_router
 from App.community_38.community_38_processed_router import router as community_38_processed_router
+from App.news.category_router import router as category_router
 # from App.community_38.community_38_postprocess_regression_router import router as community_38_postprocess_regression_router
 # from App.community_38.community_38_postprocess_neural_router import router as community_38_postprocess_neural_router
 from App.config import PORT
@@ -20,6 +21,7 @@ app.include_router(finance_router)
 app.include_router(finance_merge_router)
 app.include_router(community_38_router)
 app.include_router(community_38_processed_router)
+app.include_router(category_router)
 # app.include_router(community_38_postprocess_regression_router)
 # app.include_router(community_38_postprocess_neural_router)
 
