@@ -8,15 +8,18 @@ from starlette.requests import Request
 
 from App.news.news_processed_router import router as news_router
 from App.news.summary_router import router as summary_router
+from App.news.news_summary_router import router as news_summary_router
+
 from App.finance.finance_processed_router import router as finance_router
 from App.finance.finance_merge_processed_router import router as finance_merge_router
+from App.finance.krx_stock_router import router as stock_router
+
 from App.community_38.community_38_router import router as community_38_router
 from App.community_38.community_38_processed_router import router as community_38_processed_router
+
 from App.web.web_router import router as web_router
-from App.finance.krx_stock_router import router as stock_router
 from App.web.ipo_list_router import router as ipo_list_router
 from App.web.community_router import router as community_router
-from App.news.news_summary_router import router as news_summary_router
 
 from App.config import PORT
 

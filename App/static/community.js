@@ -13,7 +13,6 @@ async function loadCommunityList() {
                     <td>${index + 1}</td>
                     <td>${post.종목}</td>
                     <td><a href="/community_detail?post_id=${post._id}" class="post-link">${post.제목}</a></td>
-                    <td>${post.내용.substring(0, 50)}...</td>
                     <td>${post.글쓴이}</td>
                     <td>${post.날짜}</td>
                     <td>${post.조회수}</td>
