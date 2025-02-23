@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> IPO_ValueX </title>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+    </head>
+    <body>
+
+        <div id = "air" style = "display: none;"></div>
+        <div id = "phase" style = "display: none;"></div>
+        <div id = "weather" style = "display: none;"></div>
+
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <div class="navheader">
+                    <a href = "/mainpage" class = "tomain" id="now" >main</a>
+                    <a href = "/get_value" class = "tovalue" >수익률 예측</a>
+                    <a href = "/suggest_news" class = "tosuggestnews">섹터별 요약뉴스</a>
+                    <a href = "/community" class = "tocommunity">공모주 커뮤니티</a>
+                </div>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="mainpage">
+                <!-- 코스피 & 코스닥 -->
+                <div class="api-container">
+                    <div class="api">
+                        <div id="kospi-title" class="title">
+                            📊 코스피 지수
+                            <div id="kospi-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                        </div>
+                        <div class="apibox" id="kospi"><canvas id="kospiChart"></canvas></div>  
+                    </div>
+                    
+                    <div class="api">
+                        <div id="kosdaq-title" class="title">
+                            📊 코스닥 지수
+                            <div id="kosdaq-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                        </div>
+                        <div class="apibox" id="kosdaq"><canvas id="kosdaqChart"></canvas></div>  
+                    </div>
+                </div>
+            
+                <!-- 2x2 그리드 배치 -->
+                <div class="sector-container">
+                    <div class="sector-box">
+                        <h3>📈 성장 섹터 (반도체·의료·의약)</h3>
+                        <div class="api">
+                            <div id="1013-title" class="title">
+                                📊 반도체 지수
+                                <div id="1013-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1013"><canvas id="1013Chart"></canvas></div>
+                        </div>
+                        <div class="api">
+                            <div id="1014-title" class="title">
+                                📊 의료·의약 지수
+                                <div id="1014-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1014"><canvas id="1014Chart"></canvas></div>
+                        </div>
+                    </div>
+                    
+                    <div class="sector-box">
+                        <h3>⚙️ 경기민감 섹터 (화학·기계)</h3>
+                        <div class="api">
+                            <div id="1008-title" class="title">
+                                📊 화학 지수
+                                <div id="1008-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1008"><canvas id="1008Chart"></canvas></div>
+                        </div>
+                        <div class="api">
+                            <div id="1012-title" class="title">
+                                📊 기계 지수
+                                <div id="1012-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1012"><canvas id="1012Chart"></canvas></div>
+                        </div>
+                    </div>
+                    
+                    <div class="sector-box">
+                        <h3>🛡️ 방어형 섹터 (서비스·식료·기호품)</h3>
+                        <div class="api">
+                            <div id="1026-title" class="title">
+                                📊 서비스 지수
+                                <div id="1026-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1026"><canvas id="1026Chart"></canvas></div>
+                        </div>
+                        <div class="api">
+                            <div id="1005-title" class="title">
+                                📊 식료·기호품 지수
+                                <div id="1005-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1005"><canvas id="1005Chart"></canvas></div>
+                        </div>
+                    </div>
+            
+                    <div class="sector-box">
+                        <h3>🏦 금융·인프라 (은행·보험·증권·인프라)</h3>
+                        <div class="api">
+                            <div id="1021-title" class="title">
+                                📊 은행·보험·증권 지수
+                                <div id="1021-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1021"><canvas id="1021Chart"></canvas></div>
+                        </div>
+                        <div class="api">
+                            <div id="1045-title" class="title">
+                                📊 인프라 지수
+                                <div id="1045-change" class="change-rate"></div>  <!-- ✅ 등락률 표시 -->
+                            </div>
+                            <div class="apibox" id="1045"><canvas id="1045Chart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 📌 Chart.js 라이브러리 추가 -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- 📌 JS 파일 불러오기 -->
+        <script src="{{ url_for('static', path='/main.js') }}"></script>
+        <footer></footer>
+
+    </body>
+
+    <script>
+
+    </script>
+
+</html>

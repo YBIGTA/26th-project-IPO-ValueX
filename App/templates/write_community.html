@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> IPO_ValueX </title>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+    </head>
+    <body>
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <nav>
+                    <div class="navheader">
+                        <a href = "/mainpage" class = "tomain" >main</a>
+                        <a href = "/get_value" class = "tovalue" >수익률 예측</a>
+                        <a href = "/suggest_news" class = "tosuggestnews">섹터별 요약뉴스</a>
+                        <a href = "/community" class = "tocommunity" id="now">공모주 커뮤니티</a>
+                    </div>
+                </nav>
+            </nav>
+        </header>
+        <main>
+            <div class="communitypage">
+                <!-- <h3 class="communityheader">📋 IPO 게시판 📋</h3> -->
+                <!-- <div class = "communitybutton">
+                    <button type="submit">등록</button>
+                    <a href = "/community">submit</a>
+                </div> -->
+                <div class ="community-write-title">✍️ 커뮤니티 글쓰기</div>
+                <div class="communitywrite" id="write">
+                    <form id="community-form">
+                        <!-- ✅ 종목 선택이 제일 위로 이동 -->
+                        <div class="form-group">
+                            <div class="stock-title">
+                                <span>📌 종목 선택:</span>
+                            </div>
+                            <div id="stock-list" class="stock-container">
+                                <!-- ✅ 종목 체크박스가 동적으로 추가될 위치 -->
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="title">📋 제목:</label>
+                            <input type="text" name="제목" id="title" required>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="content">📝 내용:</label>
+                            <textarea name="내용" id="content" required></textarea>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="author">✍️ 글쓴이:</label>
+                            <input type="text" name="글쓴이" id="author" required>
+                        </div>
+
+                        <!-- ✅ 날짜 필드를 숨김 (백엔드에는 전달됨) -->
+                        <input type="hidden" name="날짜" id="date">
+                    
+                        <button type="submit">등록</button>
+                    </form>
+                </div>
+            </div>
+                            
+
+        </main>
+
+        <script src="{{ url_for('static', path='write_community.js') }}"></script>
+        <script>
+            document.getElementById("community-form").addEventListener("submit", submitPost);
+        </script>
+        <script>
+            console.log("📌 HTML 로드 완료. 날짜 필드 확인:", document.getElementById("date"));
+        </script>
+    </body>
+</html>

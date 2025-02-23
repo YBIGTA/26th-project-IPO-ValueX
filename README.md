@@ -21,6 +21,10 @@ curl -X 'POST' 'http://127.0.0.1:8000/news/preprocess/news?mode=crawler' -H 'acc
 curl -X 'POST' 'http://127.0.0.1:8000/summary/summarize/data?mode=local' -H 'accept: application/json'
 4-2-2. 요약 및 벡터화 실행(db 다운 모드)
 curl -X 'POST' 'http://127.0.0.1:8000/summary/summarize/data?mode=db' -H 'accept: application/json'
+4-3. 뉴스 요약 및 본문
+curl -X GET http://127.0.0.1:8000/api/news_summary
+4-3-2. 뉴스 하나별 내용 확인
+curl -X GET http://127.0.0.1:8000/api/news_summary/{뉴스링크}
 5. 다른 터미널에서 finance 관련 Post 요청
 5-1-1. 크롤링된 재무 데이터 업로드 실행(CSV 데이터를 기반으로 업로드)
 curl -X POST "http://127.0.0.1:8000/finance/upload"
@@ -41,5 +45,12 @@ curl -X 'POST' 'http://127.0.0.1:8000/community_38/processed?mode=db'
 curl -X 'POST' 'http://127.0.0.1:8000/community_38/postprocess_regression'
 6-4. 데이터 처리 for 뉴럴팩터
 curl -X 'POST' 'http://127.0.0.1:8000/community_38/postprocess_neural'
+
+## web
+
+1. mainpage
+1-1. api
+curl -X GET "http://127.0.0.1:8000/api/krx/{지수이름}"
+
 
 
