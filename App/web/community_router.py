@@ -51,17 +51,22 @@ def create_community_post(post: dict):
 
 ### ✅ 3. 특정 게시글 조회 (내용 포함)
 @router.get("/{post_id}")
-def get_community_post(post_id: str):
-    """ 특정 게시글 조회 (ID 기반) """
-    post = community_collection.find_one({"_id": ObjectId(post_id)}, {"_id": 1, "종목": 1, "제목": 1, "내용": 1, "글쓴이": 1, "날짜": 1, "조회수": 1, "추천수": 1})
-    
-    if not post:
-        raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
+async def get_community_post(post_id: str):
+    """ 특정 커뮤니티 게시글 조회 """
+    try:
+        # ✅ ObjectId로 변환 (MongoDB `_id`가 ObjectId일 경우)
+        if ObjectId.is_valid(post_id):  # post_id가 유효한 ObjectId인지 확인
+            post = community_collection.find_one({"_id": ObjectId(post_id)}, {"_id": 0})
+        else:
+            raise HTTPException(status_code=400, detail="잘못된 게시글 ID입니다.")
 
-    # ✅ `_id`를 문자열로 변환
-    post["_id"] = str(post["_id"])
-    
-    return {"status": "success", "data": post}
+        if not post:
+            raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
+
+        return {"status": "success", "data": post}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"서버 오류: {str(e)}")
 
 
 ### ✅ 4. 특정 게시글 삭제

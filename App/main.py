@@ -123,5 +123,11 @@ async def run_community_38_processing():
     return {"message": "✅ 38 community data preprocessing started"}
 
 
+@app.get("/community_detail")
+async def community_detail_page(request: Request):
+    """ 커뮤니티 상세 페이지 렌더링 """
+    return templates.TemplateResponse("community_detail.html", {"request": request})
+
+
 if __name__ == "__main__":
     uvicorn.run("App.main:app", host="0.0.0.0", port=PORT, reload=True)

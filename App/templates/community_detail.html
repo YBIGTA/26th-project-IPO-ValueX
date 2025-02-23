@@ -27,12 +27,30 @@
         </header>
     
     <main>
-        <div class="post-container">
-            <h2 id="post-title"></h2>
-            <p><strong>작성자:</strong> <span id="post-author"></span></p>
-            <p><strong>작성일:</strong> <span id="post-date"></span></p>
-            <hr>
-            <p id="post-content"></p>
+        <div class = "community_detail_page">
+            <!-- ✅ 맨 위: 날짜, 글쓴이, 조회수, 추천수 -->
+            <div class="post-meta">
+                <p><strong>📝 작성일:</strong> <span id="post-date"></span></p>
+                <p><strong>👤 글쓴이:</strong> <span id="post-author"></span></p>
+                <p><strong>👀 조회수:</strong> <span id="post-views"></span></p>
+                <p><strong>👍 추천수:</strong> <span id="post-likes"></span></p>
+            </div>
+
+            <!-- ✅ 종목, 제목 -->
+            <div class="post-header">
+                <h2 id="post-title"></h2>
+                <p><strong>📌 종목:</strong> <span id="post-stock"></span></p>
+            </div>
+
+            <!-- ✅ 본문 -->
+            <div class="post-content">
+                <p id="post-body"></p>
+            </div>
+
+            <!-- ✅ 돌아가기 버튼 -->
+            <div class="post-footer">
+                <a href="/community" class="back-button">⬅ 목록으로 돌아가기</a>
+            </div>
         </div>
     </main>
 

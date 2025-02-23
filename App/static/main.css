@@ -515,6 +515,86 @@ button[type="submit"]:hover {
     background-color: #45a049;
 }
 
+
+/*커뮤니티 상세글 확인*/
+.community_detail_page{
+    width: 80%; /* 전체 너비 조정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px 0;
+}
+/* 📌 게시글 메타 정보 (작성일, 글쓴이, 조회수, 추천수) */
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.post-meta p {
+    margin: 5px 0;
+}
+
+/* 📌 게시글 제목 & 종목 */
+.post-header {
+    text-align: center;
+    margin-bottom: 20px;
+    flex-direction: row;
+}
+
+.post-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.post-header p {
+    font-size: 16px;
+    color: #007bff;
+    font-weight: bold;
+}
+#post-date{
+    border: 1px solid black;
+}
+
+/* 📌 본문 스타일 */
+.post-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* 📌 돌아가기 버튼 */
+.post-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
 /*섹터별 요약뉴스*/
 .newssuggest{
     display: flex;
