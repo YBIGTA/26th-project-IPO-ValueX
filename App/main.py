@@ -40,6 +40,8 @@ app.include_router(stock_router)
 app.include_router(ipo_list_router)
 app.include_router(community_router)
 app.include_router(news_summary_router)
+app.include_router(category_router)
+app.include_router(summarize_router)
 
 # 📌 정적 파일 제공 (CSS, JS 등)
 app.mount("/static", StaticFiles(directory="App/static"), name="static")
