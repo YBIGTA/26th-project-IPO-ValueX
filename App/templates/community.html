@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> IPO_ValueX </title>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+    </head>
+    <body>
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <nav>
+                    <div class="navheader">
+                        <a href = "/mainpage" class = "tomain" >main</a>
+                        <a href = "/get_value" class = "tovalue" >수익률 예측</a>
+                        <a href = "/suggest_news" class = "tosuggestnews">섹터별 요약뉴스</a>
+                        <a href = "/community" class = "tocommunity" id="now">공모주 커뮤니티</a>
+                    </div>
+                </nav>
+            </nav>
+        </header>
+        <main>
+            <div class="communitypage">
+                <div class="communityheader">
+                    <h2>📢 IPO 커뮤니티</h2>
+                    <button class="communitybutton" onclick="window.location.href='/write_community'">글쓰기</button>
+                </div>
+    
+                <!-- ✅ 커뮤니티 테이블 -->
+                <table class="community-table">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>종목</th>
+                            <th id = "community-title">제목</th>
+                            <!-- <th>내용</th> -->
+                            <th>글쓴이</th>
+                            <th>날짜</th>
+                            <th>조회수</th>
+                            <th>추천수</th>
+                        </tr>
+                    </thead>
+                    <tbody id="community-table-body">
+                        <!-- JavaScript가 데이터를 불러와 채움 -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <script src="{{ url_for('static', path='community.js') }}"></script>
+        <footer>
+
+        </footer>
+
+    </body>
+</html>

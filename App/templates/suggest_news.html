@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> IPO_ValueX </title>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+    </head>
+    <body>
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <nav>
+                    <div class="navheader">
+                        <a href = "/mainpage" class = "tomain"  >main</a>
+                        <a href = "/get_value" class = "tovalue" >수익률 예측</a>
+                        <a href = "/suggest_news" class = "tosuggestnews" id="now">섹터별 요약뉴스</a>
+                        <a href = "/community" class = "tocommunity">공모주 커뮤니티</a>
+                    </div>
+                </nav>
+            </nav>
+        </header>
+        <main>
+            <!-- <h3 class="newsheader">섹터별 뉴스 요약 몰아보기</h3> -->
+            <div class="newssuggest">
+                <div class = "newslistheader">
+                    <h2>📢 가장 인기 있는 뉴스 요약</h2>
+                </div>
+                <div class="news-list">
+                    <table>
+                        <!-- <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th>사진</th>
+                                <th>요약내용</th>
+                                <th>날짜</th>
+                                <th>카테고리점수</th>
+                                <th>태그</th>
+                            </tr>
+                        </thead> -->
+                        <tbody id="news-table-body">
+                            <!-- 뉴스 데이터 동적 로드 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+           
+        </main>
+
+        <script src="{{ url_for('static', path='suggest_news.js') }}"></script>
+        <footer>
+            
+        </footer>
+    </body>
+</html>
