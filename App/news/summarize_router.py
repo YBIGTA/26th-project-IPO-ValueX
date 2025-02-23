@@ -21,7 +21,7 @@ def summarize_news(
     start_date: str = Query(default="20250218", description="시작 날짜 (YYYYMMDD)"),
     end_date: str = Query(default=datetime.now().strftime("%Y%m%d"), description="종료 날짜 (YYYYMMDD)")
 ):
-    summarized_collection = mongo_db.summarized_collection
+    summarized_news = mongo_db.summarized_news
     news_data = mongo_db.preprocessed_news
 
     try:
@@ -77,6 +77,7 @@ def summarize_news(
                 summary = f"Error: {e}"
                 
             original_link = news.get("Link", "N/A")
+            date = news.get("Date", "N/A")
 
             try:
                 key = ["성장_긍정", "성장_부정", "민감_긍정", "민감_부정",
@@ -91,13 +92,14 @@ def summarize_news(
             doc = {
                 "_id": original_link,
                 "요약내용": summary,
+                "날짜": str(date),
                 "link": original_link,
                 "사진": "",
                 "카테고리점수": category_scores,
-                "태크": ["", "", ""]
+                "태그": ["", "", ""]
             }
             try:
-                summarized_collection.insert_one(doc)
+                summarized_news.update_one({"_id": original_link}, {"$set": doc}, upsert=True)
                 inserted_count += 1
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Failed to insert data for link <{original_link}>: {e}")
