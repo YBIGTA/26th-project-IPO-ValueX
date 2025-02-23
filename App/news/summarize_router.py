@@ -1,7 +1,7 @@
 import openai
 from Database.mongodb_connection import mongo_db
 from fastapi import APIRouter, HTTPException, Query
-from LLM_modeling.summary.summary import generate_summary
+from LLM_modeling.summary.summary import generate_summary, generate_tag
 from LLM_modeling.vector_to_category.single_processor import single_processor
 
 from datetime import datetime
@@ -74,7 +74,21 @@ def summarize_news(
             try:
                 summary = generate_summary(body_text)
             except Exception as e:
-                summary = f"Error: {e}"
+                summary = "N/A"
+            
+            tag_list = [
+                "IT", "바이오", "게임", "배터리", "화학", "기계", "자동차", "건설",
+                "금속", "에너지", "식품", "유통", "서비스", "금융", "증권", "보험",
+                "기타", "종합"
+            ] 
+
+            if summary != "N/A":
+                try:
+                    tag = generate_tag(summary)
+                    if tag not in tag_list:
+                        tag = "N/A"
+                except Exception as e:
+                    tag = "N/A"
                 
             original_link = news.get("Link", "N/A")
             date = news.get("Date", "N/A")
@@ -96,7 +110,7 @@ def summarize_news(
                 "link": original_link,
                 "사진": "",
                 "카테고리점수": category_scores,
-                "태그": ["", "", ""]
+                "태그": tag
             }
             try:
                 summarized_news.update_one({"_id": original_link}, {"$set": doc}, upsert=True)
