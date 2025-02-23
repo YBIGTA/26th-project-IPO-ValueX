@@ -1,6 +1,7 @@
 import asyncio
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from datetime import datetime
 import httpx
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -9,6 +10,8 @@ from starlette.requests import Request
 from App.news.news_processed_router import router as news_router
 from App.news.summary_router import router as summary_router
 from App.news.news_summary_router import router as news_summary_router
+from App.news.category_router import router as category_router
+from App.news.summarize_router import router as summarize_router
 
 from App.finance.finance_processed_router import router as finance_router
 from App.finance.finance_merge_processed_router import router as finance_merge_router
@@ -82,6 +85,42 @@ async def run_news_summarization():
     url_summary = f"http://127.0.0.1:{PORT}/summary/summarize/data?mode=db"
     await make_request(url_summary)
     return {"message": "✅ News summarization started"}
+
+@app.post("/run/news/categorization")
+async def run_news_categorization():
+    """ 📰 뉴스 데이터 카테고리화 -> 일별 섹터별 지수 반환 (DB모드로만) """
+    url_category = f"http://127.0.0.1:{PORT}/category/score/category"
+    await make_request(url_category)
+    return {"message": "✅ News categorization started"}
+
+@app.post("/run/news/news_summarization")
+async def run_news_summarization(
+    start_date: str = Query(default="20250218", description="시작 날짜 (YYYYMMDD) 형식"),
+    end_date: str = Query(default=datetime.now().strftime("%Y%m%d"), description="종료 날짜 (YYYYMMDD) 형식")
+):
+    """📰 OPENAI api를 이용한 뉴스 요약"""
+    
+    # 1) 쿼리 파라미터 확인
+    print(">>> Received start_date:", start_date, "end_date:", end_date)
+
+    # 2) summarize 엔드포인트로 요청 보내기
+    url_summarize = f"http://127.0.0.1:{PORT}/news/summarize/data"
+    
+    # requests 혹은 httpx 등을 이용해서 쿼리 파라미터 전달
+    # 예) httpx.AsyncClient를 사용한 비동기 예시
+    import httpx
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            url_summarize,
+            params={
+                "start_date": start_date,
+                "end_date": end_date
+            }
+        )
+        data = response.json()
+        print(">>> Summarize Response:", data)
+    
+    return {"message": "✅ News summarization started", "response": data}
 
 
 # 📌 금융 데이터 관련 API
