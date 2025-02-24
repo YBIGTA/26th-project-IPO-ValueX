@@ -10,11 +10,8 @@ from starlette.requests import Request
 from App.news.news_processed_router import router as news_router
 from App.news.summary_router import router as summary_router
 from App.news.news_summary_router import router as news_summary_router
-<<<<<<< HEAD
 from App.news.category_router import router as category_router
 from App.news.summarize_router import router as summarize_router
-=======
->>>>>>> web
 
 from App.finance.finance_processed_router import router as finance_router
 from App.finance.finance_merge_processed_router import router as finance_merge_router
