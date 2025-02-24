@@ -1,0 +1,97 @@
+
+
+/*커뮤니티 상세글 확인*/
+.community_detail_page{
+    width: 80%; /* 전체 너비 조정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px 0;
+}
+/* 📌 게시글 메타 정보 (작성일, 글쓴이, 조회수, 추천수) */
+.post-meta {
+    display: flex;
+    justify-content:space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+    gap: 10px;
+    align-items: center;
+}
+
+.post-meta p {
+    display: flex;  /* 내부 요소가 flex 적용됨 */
+    align-items: center;
+    margin: 5px 0;
+    white-space: nowrap;  /* 글자가 줄 바꿈되지 않도록 */
+}
+
+span#post-date {
+    flex: 4;
+    min-width: 200px;
+    max-width: 400px;  /* 너무 넓어지는 것 방지 */
+}
+
+span#post-author, #post-views, #post-likes {
+    flex: 1; /* 다른 요소들은 균등 분배 */
+    min-width: 120px;
+}
+
+
+
+/* 📌 게시글 제목 & 종목 */
+.post-header {
+    text-align: center;
+    margin-bottom: 20px;
+    flex-direction: row;
+}
+
+.post-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.post-header p {
+    font-size: 16px;
+    color: #007bff;
+    font-weight: bold;
+}
+
+
+/* 📌 본문 스타일 */
+.post-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+/* 📌 돌아가기 버튼 */
+.post-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}

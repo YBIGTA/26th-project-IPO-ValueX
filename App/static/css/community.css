@@ -1,0 +1,82 @@
+
+/* 커뮤니티*/
+/* 📌 전체 페이지 중앙 정렬 & 여백 추가 */
+.communitypage {
+    width: 80%; /* 전체 너비 조정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px 0;
+}
+
+/* 📌 제목 & 글쓰기 버튼 컨테이너 */
+.communityheader {
+    display: flex;
+    justify-content: space-between; /* 제목 왼쪽, 버튼 오른쪽 */
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* 📌 제목 스타일 */
+.communityheader h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/*커뮤니티 글쓰기*/
+
+/* 📌 글쓰기 버튼 스타일 */
+.communitybutton {
+    background-color: #787878; /* 토스 느낌의 빨간색 */
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease-in-out;
+}
+
+.communitybutton:hover {
+    background-color: #d63a3a; /* 호버 시 색상 변경 */
+}
+
+/* 📌 커뮤니티 테이블 스타일 */
+.community-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: white;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* 📌 테이블 헤더 스타일 */
+.community-table thead {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.community-table th, .community-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th#community-title{
+    width: 50%;
+}
+
+/* 📌 테이블 행에 마우스 오버 시 강조 효과 */
+.community-table tbody tr:hover {
+    background-color: #f1f1f1; /* 연한 회색 */
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+/* 📌 테이블 너비 조정 */
+.community-table {
+    width: 100%;
+    /* max-width: 1000px;  */
+    margin: 0 auto; /* 중앙 정렬 */
+}

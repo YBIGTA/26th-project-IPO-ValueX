@@ -7,7 +7,9 @@
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
         <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', path='css/common.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', path='css/write_community.css') }}">
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     </head>
     <body>
         <header>
@@ -71,7 +73,11 @@
 
         </main>
 
+<<<<<<< HEAD
         <script src="{{ url_for('static', path='write_community.js') }}"></script>
+=======
+        <script src="{{ url_for('static', path='js/write_community.js') }}"></script>
+>>>>>>> web
         <script>
             document.getElementById("community-form").addEventListener("submit", submitPost);
         </script>

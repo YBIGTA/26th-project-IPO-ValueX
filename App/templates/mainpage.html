@@ -7,7 +7,9 @@
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
         <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', path='css/common.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     </head>
     <body>
 
@@ -130,7 +132,11 @@
         <!-- 📌 Chart.js 라이브러리 추가 -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <!-- 📌 JS 파일 불러오기 -->
+<<<<<<< HEAD
         <script src="{{ url_for('static', path='/main.js') }}"></script>
+=======
+        <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+>>>>>>> web
         <footer></footer>
 
     </body>
