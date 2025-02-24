@@ -730,7 +730,7 @@ td {
 }
 
 .news-summary{
-    text-align: left;
+    text-align: justify;
     margin: 10px 20px auto;
 }
 
@@ -774,6 +774,11 @@ td {
     padding: 4px 10px;
     border-radius: 15px;
     font-size: 12px;
+}
+
+.tag::before {
+    content: "#";
+    margin-right: 3px; /* #와 텍스트 사이 간격 조절 */
 }
 
 /* ✅ 반응형 디자인 */

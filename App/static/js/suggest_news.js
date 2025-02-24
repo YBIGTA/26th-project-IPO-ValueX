@@ -36,10 +36,10 @@ async function loadNewsList() {
                             </div>
                             <div class="news-bottom">
                                 <div class="news-category">
-                                    📊 금융(긍정/부정): ${news.카테고리점수["금융_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["금융_부정"]?.toFixed(2) ?? "N/A"}  
-                                    | 성장(긍정/부정): ${news.카테고리점수["성장_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["성장_부정"]?.toFixed(2) ?? "N/A"}  
-                                    | 민감(긍정/부정): ${news.카테고리점수["민감_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["민감_부정"]?.toFixed(2) ?? "N/A"}  
-                                    | 방어(긍정/부정): ${news.카테고리점수["방어_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["방어_부정"]?.toFixed(2) ?? "N/A"}
+                                    📊 금융 (긍정/부정): ${news.카테고리점수["금융_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["금융_부정"]?.toFixed(2) ?? "N/A"}  
+                                    | 성장 (긍정/부정): ${news.카테고리점수["성장_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["성장_부정"]?.toFixed(2) ?? "N/A"}  
+                                    | 민감 (긍정/부정): ${news.카테고리점수["민감_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["민감_부정"]?.toFixed(2) ?? "N/A"}  
+                                    | 방어 (긍정/부정): ${news.카테고리점수["방어_긍정"]?.toFixed(2) ?? "N/A"} / ${news.카테고리점수["방어_부정"]?.toFixed(2) ?? "N/A"}
                                 </div>
                                 <div class="news-tags">
                                     ${tagsArray.length > 0 ? tagsArray.map(tag => `<span class="tag">${tag}</span>`).join("") : "<span class='tag'>태그 없음</span>"}

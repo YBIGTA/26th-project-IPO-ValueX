@@ -16,6 +16,8 @@ from App.finance.krx_stock_router import router as stock_router
 
 from App.community_38.community_38_router import router as community_38_router
 from App.community_38.community_38_processed_router import router as community_38_processed_router
+# from App.community_38.community_38_postprocess_regression_router import router as community_38_postprocess_regression_router
+# from App.community_38.community_38_postprocess_neural_router import router as community_38_postprocess_neural_router
 
 from App.web.web_router import router as web_router
 from App.web.ipo_list_router import router as ipo_list_router
@@ -32,6 +34,8 @@ app.include_router(finance_router)
 app.include_router(finance_merge_router)
 app.include_router(community_38_router)
 app.include_router(community_38_processed_router)
+# app.include_router(community_38_postprocess_regression_router)
+# app.include_router(community_38_postprocess_neural_router)
 app.include_router(web_router)
 app.include_router(stock_router) 
 app.include_router(ipo_list_router)
@@ -125,6 +129,21 @@ async def run_community_38_processing():
     await make_request(url_community_38_processing)
     return {"message": "✅ 38 community data preprocessing started"}
 
+# # 📌 커뮤니티 38 데이터 후처리 (회귀)
+# @app.post("/run/community_38/postprocess_regression")
+# async def run_community_38_postprocess_regression():
+#     """ 🏛 38 데이터 후처리 (회귀 분석) """
+#     url_community_38_postprocess_regression = f"http://127.0.0.1:{PORT}/community_38/postprocess_regression"
+#     await make_request(url_community_38_postprocess_regression)
+#     return {"message": "✅ 38 community regression postprocessing started"}
+
+# # 📌 커뮤니티 38 데이터 후처리 (신경망)
+# @app.post("/run/community_38/postprocess_neural")
+# async def run_community_38_postprocess_neural():
+#     """ 🏛 38 데이터 후처리 (신경망) """
+#     url_community_38_postprocess_neural = f"http://127.0.0.1:{PORT}/community_38/postprocess_neural"
+#     await make_request(url_community_38_postprocess_neural)
+#     return {"message": "✅ 38 community neural postprocessing started"}
 
 @app.get("/community_detail")
 async def community_detail_page(request: Request):

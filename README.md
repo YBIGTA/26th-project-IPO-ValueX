@@ -42,9 +42,9 @@ curl -X 'POST' 'http://127.0.0.1:8000/community_38/processed?mode=local'
 6-2-2. 데이터 전처리 for KOTE(db 모드)
 curl -X 'POST' 'http://127.0.0.1:8000/community_38/processed?mode=db'
 6-3. 데이터 처리 for 회귀
-curl -X 'POST' 'http://127.0.0.1:8000/community_38/postprocess_regression'
+curl -X 'POST' 'http://127.0.0.1:8000/run/community_38/postprocess_regression'
 6-4. 데이터 처리 for 뉴럴팩터
-curl -X 'POST' 'http://127.0.0.1:8000/community_38/postprocess_neural'
+curl -X 'POST' 'http://127.0.0.1:8000/run/community_38/postprocess_neural'
 
 ## web
 

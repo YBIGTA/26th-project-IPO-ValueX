@@ -88,7 +88,7 @@ function drawStockChart(stockData, canvasId, lineColor) {
                     position: "average", // ✅ 마우스 커서 근처에 표시되도록 수정
                     callbacks: {
                         title: (tooltipItems) => tooltipItems[0].label, // ✅ 마우스 오버 시 날짜 표시
-                        label: (tooltipItem) => `종가: ${tooltipItem.raw} KRW` // ✅ 종가 표시
+                        label: (tooltipItem) => `${tooltipItem.raw}` // ✅ 종가 표시
                     }
                 }
             },
@@ -97,7 +97,7 @@ function drawStockChart(stockData, canvasId, lineColor) {
                     display: false, // ✅ X축(날짜) 숨김
                     grid: { drawTicks: false, drawBorder: false } // ✅ 불필요한 눈금 제거
                 },
-                y: { title: { display: true, text: "종가 (KRW)" } }
+                y: { title: { display: false}} //, text: "종가 (KRW)" } }
             },
             hover: {
                 mode: "nearest",  // ✅ 가까운 데이터 포인트에도 반응하도록 수정

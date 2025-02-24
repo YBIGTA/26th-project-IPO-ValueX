@@ -1,1 +1,0 @@
-# 마지막에 필요한 38, naver, finance 데이터 db로 저장
