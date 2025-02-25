@@ -25,82 +25,59 @@ function fetchCompanyInfo(companyName) {
 
             if (data.status === "success") {
                 let binaryClassification = data.data.이진분류;
-                let regressionValue = data.data.회귀;
-                
-                console.log("이진분류 원본 값:", binaryClassification);
-                console.log("회귀 원본 값:", regressionValue);
+                let reg = data.data.회귀;
+                let listingDate = data.data.상장일;  // ✅ 상장일 가져오기
 
-                // 🛑 이진분류 값이 비어 있을 경우 예외 처리
+                console.log("이진분류 원본 값:", binaryClassification);
+
+                // 값이 존재하지 않거나 undefined/null인 경우 기본값 999 할당
                 if (binaryClassification === undefined || binaryClassification === null || binaryClassification === "") {
                     console.error("이진분류 값이 비어 있음!", binaryClassification);
-                    binaryClassification = 999; // 예외처리 값
+                    binaryClassification = 999; // 오류 발생 시 예외처리용 값
                 } else {
                     binaryClassification = parseInt(binaryClassification, 10);
                 }
 
-                // 🛑 회귀 값이 비어 있을 경우 기본값 설정 & 숫자로 변환 (음수 값 포함)
-                if (regressionValue === undefined || regressionValue === null || regressionValue === "") {
-                    console.error("회귀 값이 비어 있음!", regressionValue);
-                    regressionValue = 999; // 예외처리 값
-                } else {
-                    regressionValue = parseFloat(regressionValue); // ✅ `parseInt()` 대신 `parseFloat()` 사용
-                    if (isNaN(regressionValue)) {
-                        regressionValue = 999; // 숫자가 아니면 기본값 설정
-                    }
-                }
-
                 console.log("이진분류 변환 후 값:", binaryClassification);
-                console.log("회귀 변환 후 값:", regressionValue);
 
-                // 🟢 이진분류 문구 설정
-                let binaryMessage = "";
-                let regressionMessage = ""; // 초기값 설정
-
-                // 🔵 회귀 값 구간 설정
-                if (regressionValue <= 0) {
-                    regressionMessage = "📉 0 이하 (매우 낮음)";
-                } else if (regressionValue <= 30) {
-                    regressionMessage = "📉 0 ~ 30 (낮음)";
-                } else if (regressionValue <= 60) {
-                    regressionMessage = "📈 30 ~ 60 (보통)";
-                } else if (regressionValue <= 90) {
-                    regressionMessage = "📈 60 ~ 90 (약간 높음)";
-                } else if (regressionValue <= 120) {
-                    regressionMessage = "📈 90 ~ 120 (높음)";
-                } else if (regressionValue <= 150) {
-                    regressionMessage = "📈 120 ~ 150 (매우 높음)";
-                } else if (regressionValue <= 180) {
-                    regressionMessage = "📈 150 ~ 180 (최고 수준)";
-                } else {
-                    regressionMessage = "🔥 180 이상 (폭발적 성장 가능)";
-                }
+                let listingInfo = `<strong style="color:black">상장일: ${listingDate}</strong><br><br>`; // ✅ 상장일 추가 (검정 글씨)
 
                 if (binaryClassification === -1) {
-                    binaryMessage = `<strong style="color:blue">${companyName}</strong><br><br>🕒 <span style="color:blue">아직 결과를 알 수 없습니다.</span>`;
+                    infoBox.innerHTML = `<strong>${companyName}</strong><br><br>` + listingInfo + 
+                        `⏳ <span style="color:gray">아직 결과를 알 수 없습니다.</span>`;
                 } else if (binaryClassification === 0) {
-                    binaryMessage = `<strong style="color:red">${companyName}</strong><br><br>❌ <span style="color:red">신중하세요! 투자 비추천</span>`;
-                    
-                    // 🔹 회귀 값이 30 이상이면 출력
-                    if (regressionValue >= 30) {
-                        binaryMessage += `<br><br>📊 회귀 분석: ${regressionMessage}`;
-                    }
+                    let regText = reg >= 30 ? `<br><br>📊 예상 변동 구간: ${getRegRange(reg)}` : ""; // ✅ 회귀 값 30 이상이면 표시
+                    infoBox.innerHTML = `<strong style="color:red">${companyName}</strong><br><br>` + listingInfo +
+                        `❌ <span style="color:red">신중하세요! 투자 비추천</span>` + regText;
                 } else if (binaryClassification === 1) {
-                    // 🛑 회귀 값이 `0 이하`라도 구간 출력
-                    if (regressionValue <= 0) {
-                        binaryMessage = `<strong style="color:red">${companyName}</strong><br><br>❌ <span style="color:red">신중하세요! 투자 비추천</span>`;
+                    let regText = `<br><br>📊 예상 변동 구간: ${getRegRange(reg)}`;
+                    
+                    if (reg < 0) {
+                        infoBox.innerHTML = `<strong style="color:red">${companyName}</strong><br><br>` + listingInfo +
+                            `❌ <span style="color:red">투자 비추천</span>` + regText;
                     } else {
-                        binaryMessage = `<strong style="color:green">${companyName}</strong><br><br>✅ <span style="color:green">투자해볼 만해요! 🚀</span>`;
+                        infoBox.innerHTML = `<strong style="color:green">${companyName}</strong><br><br>` + listingInfo +
+                            `✅ <span style="color:green">투자해볼 만해요! 🚀</span>` + regText;
                     }
-                    binaryMessage += `<br><br>📊 회귀 분석: ${regressionMessage}`;
                 } else {
-                    binaryMessage = `<strong style="color:orange">${companyName}</strong><br><br>⚠️ <span style="color:orange">데이터 오류: 분류 정보 없음</span>`;
+                    infoBox.innerHTML = `<strong style="color:orange">${companyName}</strong><br><br>` + listingInfo +
+                        `⚠️ <span style="color:orange">데이터 오류: 분류 정보 없음</span>`;
                 }
-
-                // 최종 출력
-                infoBox.innerHTML = binaryMessage;
             } else {
                 infoBox.innerHTML = "❌ 기업 정보를 찾을 수 없습니다.";
             }
         })
         .catch(error => console.error("기업 정보 불러오기 실패:", error));
+}
+
+// ✅ 회귀 값 구간 변환 함수 (30 단위 구간)
+function getRegRange(value) {
+    if (value < 0) return "0 이하";
+    if (value < 30) return "0 ~ 30";
+    if (value < 60) return "30 ~ 60";
+    if (value < 90) return "60 ~ 90";
+    if (value < 120) return "90 ~ 120";
+    if (value < 150) return "120 ~ 150";
+    if (value < 180) return "150 ~ 180";
+    return "180 이상";
 }
