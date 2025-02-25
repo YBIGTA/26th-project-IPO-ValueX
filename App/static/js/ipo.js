@@ -46,9 +46,9 @@ function fetchCompanyInfo(companyName) {
                     infoBox.innerHTML = `<strong>${companyName}</strong><br><br>` + listingInfo + 
                         `⏳ <span style="color:gray">아직 결과를 알 수 없습니다.</span>`;
                 } else if (binaryClassification === 0) {
-                    let regText = reg >= 30 ? `<br><br>📊 예상 변동 구간: ${getRegRange(reg)}` : ""; // ✅ 회귀 값 30 이상이면 표시
+                    // let regText = reg >= 30 ? `<br><br>📊 예상 변동 구간: ${getRegRange(reg)}` : ""; // ✅ 회귀 값 30 이상이면 표시
                     infoBox.innerHTML = `<strong style="color:red">${companyName}</strong><br><br>` + listingInfo +
-                        `❌ <span style="color:red">신중하세요! 투자 비추천</span>` + regText;
+                        `❌ <span style="color:red">신중하세요! 투자 비추천</span>` ;//+ regText;
                 } else if (binaryClassification === 1) {
                     let regText = `<br><br>📊 예상 변동 구간: ${getRegRange(reg)}`;
                     
