@@ -174,9 +174,11 @@ def run_preprocess_38(input_data, kind_data):
 
 # ✅ 전체 전처리 실행
 if __name__ == "__main__":
+
     with open("Non_Finance_data/38/38_ver1.json", "r", encoding="utf-8") as f:
         input_data = json.load(f)
     with open("Non_Finance_data/38/KIND_38.json", "r", encoding="utf-8") as f:
+
         kind_data = json.load(f)
     
     filtered_data = filter_by_date(input_data, kind_data)
@@ -184,8 +186,10 @@ if __name__ == "__main__":
     grouped_data = group_and_clean_data(transformed_data)
     kote_input_data = create_kote_input(grouped_data)
     
-    with open("38_KOTE_Input.json", "w", encoding="utf-8") as f:
+    with open("38new_KOTE_Input.json", "w", encoding="utf-8") as f:
         json.dump(kote_input_data, f, ensure_ascii=False, indent=4)
     
+
     print("✅ 전체 전처리 완료! 결과 파일: 38_KOTE_Input.json")
+
 

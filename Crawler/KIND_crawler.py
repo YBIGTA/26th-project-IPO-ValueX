@@ -122,7 +122,7 @@ class KindCrawler(BaseCrawler):
 
         # NEWBIE_PROJECT 기준으로 절대 경로 설정
         base_dir = os.path.dirname(os.path.dirname(__file__))
-        output_file = os.path.join(base_dir, "Finance_data", "KIND_data.json")
+        output_file = os.path.join(base_dir, "Finance_data", "KIND_data_new.json")
 
         # 기존 데이터를 불러와 새로운 데이터와 병합
         if os.path.exists(output_file):
@@ -164,11 +164,11 @@ if __name__ == "__main__":
     os.makedirs(output_directory, exist_ok=True)
 
     # 날짜 범위 설정
-    start_date = "20140204"  # 원하는 시작 날짜
-    end_date = "20160204"    # 원하는 종료 날짜
+    start_date = "20250206"  # 원하는 시작 날짜
+    end_date = "20250225"    # 원하는 종료 날짜
 
     # 크롤링할 페이지 수를 지정
-    max_pages_to_crawl = 10  # 원하는 페이지 수로 설정
+    max_pages_to_crawl = 1  # 원하는 페이지 수로 설정
 
     crawler = KindCrawler(output_dir=output_directory)
     crawler.run(max_pages=max_pages_to_crawl, start_date=start_date, end_date=end_date)

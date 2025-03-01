@@ -5,11 +5,11 @@ import os
 import json
 
 # 시작 및 종료 날짜 설정
-start_date = "20140102"  # 2014년 1월 2일
+start_date = "20250101"  # 2014년 1월 2일
 end_date = datetime.now().strftime("%Y%m%d")  # 오늘 날짜
 
 # Finance_data 디렉토리 설정
-output_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Finance_data")
+output_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Finance_data","etc")
 os.makedirs(output_directory, exist_ok=True)
 
 def get_index_data_by_code(sector_code):
@@ -29,7 +29,7 @@ sector_code = input("크롤링할 지수 코드를 입력하세요 (예: 1013 fo
 index_data = get_index_data_by_code(sector_code)
 
 # 파일 저장 경로 설정
-output_file = os.path.join(output_directory, f"KOSPI_{sector_code}.json")
+output_file = os.path.join(output_directory, f"KOSPI_new{sector_code}.json")
 
 # JSON으로 저장
 index_data.to_json(output_file, orient="records", force_ascii=False, indent=4)

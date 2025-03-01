@@ -96,9 +96,9 @@ df.rename(columns={'TIME': '날짜', 'DATA_VALUE': indicator_name}, inplace=True
 
 # 저장 경로 설정
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-output_directory = os.path.join(base_dir, "Finance_data")
+output_directory = os.path.join(base_dir, "Finance_data","etc")
 os.makedirs(output_directory, exist_ok=True)
-output_file = os.path.join(output_directory, f"KOREA_{indicator_name.replace(' ', '_')}.json")
+output_file = os.path.join(output_directory, f"KOREAnew_{indicator_name.replace(' ', '_')}.json")
 
 # JSON 파일로 저장
 df.to_json(output_file, orient="records", force_ascii=False, indent=4)

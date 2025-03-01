@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import re
 
-def run_process_ipostock(input_json="IPOSTOCK_data.json", output_csv="X_stat.csv"):
+def run_process_ipostock(input_json="IPOSTOCK_new.json", output_csv="X_stat_new.csv"):
     with open(input_json, "r", encoding="utf-8-sig") as file:
         json_data = json.load(file)
 
@@ -22,17 +22,17 @@ def run_process_ipostock(input_json="IPOSTOCK_data.json", output_csv="X_stat.csv
                     "year_key": year_key,
                     "month_key": month_key,
                     "상장일": full_date,
-                    "공모후 발행주식수": int(details.get("주주구성", {}).get("공모후 발행주식수", "0").replace(",", "")),
+                    "공모후 발행주식수": int(re.sub(r"[^0-9]", "", details.get("주주구성", {}).get("공모후 발행주식수", "0"))),
                     "청약경쟁률": re.findall(r"\d+", details.get("공모정보", {}).get("청약경쟁률", "0"))[0],
                 }
 
                 data_list.append(row)
 
     df = pd.DataFrame(data_list)
-    # df.to_csv(output_csv, index=False, encoding="utf-8-sig")
+    df.to_csv(output_csv, index=False, encoding="utf-8-sig")
     print(f"✅ {output_csv} 생성 완료!")
 
     return df
 
-# if __name__ == "__main__":
-#     run_process_ipostock()
+if __name__ == "__main__":
+    run_process_ipostock()

@@ -2,13 +2,11 @@ import pandas as pd
 import json
 import os
 
-def run_process_daily(output_csv="df_daily.csv"):
+def run_process_daily(output_csv="df_daily_new.csv"):
     file_names = [
-        "KOSPI_1001.json", "KOSPI_1005.json", "KOSPI_1008.json", 
-        "KOSPI_1011.json", "KOSPI_1012.json", "KOSPI_1013.json",
-        "KOSPI_1014.json", "KOSPI_1015.json", "KOSPI_1017.json",
-        "KOSPI_1018.json", "KOSPI_1020.json", "KOSPI_1021.json",
-        "KOSPI_1024.json", "KOSPI_1026.json", "KOSPI_1035.json"
+        "KOSPI_new1001.json", "KOSPI_new1005.json","KOSPI_new1008.json","KOSPI_new1011.json","KOSPI_new1012.json", "KOSPI_new1013.json", 
+        "KOSPI_new1014.json","KOSPI_new1015.json","KOSPI_new1017.json","KOSPI_new1018.json","KOSPI_new1020.json","KOSPI_new1021.json",
+        "KOSPI_new1024.json","KOSPI_new1026.json","KOSPI_new1035.json","KOSPI_new1045.json","KOSPI_new1155.json","KOSPI_new1156.json","KOSPI_new2001.json"
     ]
 
     merged_df = pd.DataFrame()
@@ -31,11 +29,11 @@ def run_process_daily(output_csv="df_daily.csv"):
     merged_df["year_key"] = pd.to_datetime(merged_df["date"]).dt.year
     merged_df["month_key"] = pd.to_datetime(merged_df["date"]).dt.strftime("%Y-%m")
 
-    # merged_df.to_csv(output_csv, index=False, encoding="utf-8-sig")
+    merged_df.to_csv(output_csv, index=False, encoding="utf-8-sig")
     print(f"✅ {output_csv} 생성 완료!")
 
     return merged_df
 
 
-# if __name__ == "__main__":
-#     run_process_daily()
+if __name__ == "__main__":
+     run_process_daily()
