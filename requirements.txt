@@ -429,6 +429,7 @@ widgetsnbextension @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000
 wordcloud==1.9.4
 wrapt @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/wrapt_1699240702378/work
 wsproto==1.2.0
+<<<<<<< HEAD
 wurlitzer @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/wurlitzer_1699265832005/work
 xarray @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/xarray_1699240726099/work
 xgboost==2.1.3
@@ -443,3 +444,17 @@ zict @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zict_1699
 zipp @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zipp_1707348942775/work
 zope.interface @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zope.interface_1699243689919/work
 zstandard @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_cairdg5u3o/croot/zstandard_1728569200438/work
+=======
+dnspython==2.2.1
+pandas
+pykrx
+openpyxl
+requests
+PublicDataReader
+<<<<<<< HEAD
+pymongo
+konlpy
+mecab-python3
+mecab-ko-dic
+=======
+>>>>>>> 54d0b1772f6bac727a1fc03b4c1b5995c263db5f
