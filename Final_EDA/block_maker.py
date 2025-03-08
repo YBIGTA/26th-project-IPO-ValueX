@@ -8,7 +8,8 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Regres
 file_paths = {
     "vol": os.path.join(base_dir, "df_regression_vol_sector.csv"),
     "change": os.path.join(base_dir, "df_regression_change_sector.csv"),
-    "raw": os.path.join(base_dir, "df_regression_raw_sector.csv")
+    "raw": os.path.join(base_dir, "df_regression_raw_sector.csv"),
+    "latent": os.path.join(base_dir, "autoencoder","latent","latent_features_best.csv")
 }
 
 # 📌 블록 분류 사전 정의
@@ -30,6 +31,7 @@ final_blocks = {block: [] for block in block_mapping.keys() if block != "거시 
 final_blocks["거시지표_vol"] = []
 final_blocks["거시지표_change"] = []
 final_blocks["거시지표_raw"] = []
+final_blocks["latent"] = []
 
 # ✅ 데이터 저장용 리스트 생성
 data_storage = {block: [] for block in final_blocks.keys()}  # 데이터 저장
