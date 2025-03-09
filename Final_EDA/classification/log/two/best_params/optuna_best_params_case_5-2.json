@@ -1,0 +1,28 @@
+{
+    "RandomForest": {
+        "n_estimators": 100,
+        "max_depth": 15,
+        "min_samples_split": 3,
+        "min_samples_leaf": 2
+    },
+    "XGBoost": {
+        "n_estimators": 150,
+        "max_depth": 15,
+        "learning_rate": 0.013951926248743253,
+        "colsample_bytree": 0.6844590007349718
+    },
+    "LightGBM": {
+        "n_estimators": 150,
+        "max_depth": 10,
+        "learning_rate": 0.26204864136562317,
+        "num_leaves": 40
+    },
+    "GradientBoosting": {
+        "n_estimators": 100,
+        "max_depth": 12,
+        "learning_rate": 0.02092325732900671
+    },
+    "LogisticRegression": {
+        "C": 4.805540023227711
+    }
+}

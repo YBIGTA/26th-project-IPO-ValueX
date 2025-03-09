@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import seaborn as sns
-case_num = "4"
+case_num = "2-2"
 
 # 📌 JSON 데이터 로드
 file_path = "classification_block_data_filled.json"

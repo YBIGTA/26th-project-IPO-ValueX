@@ -9,6 +9,21 @@ Final_EDA/classification/classification_vif.py
 Final_EDA/classification/feature_importance/classification_full_feature_importance_results.csv
 Final_EDA/classification/log/classification_full_results_case_1.txt
 Final_EDA/classification/metrics/classification_full_metrics_results.csv
+Final_EDA/classification/backup
+Final_EDA/classification/plot/이진분류.png
+Final_EDA/classification/plot/케이스 1.png
+Final_EDA/classification/plot/케이스 2-1.png
+Final_EDA/classification/plot/케이스 2-2.png
+Final_EDA/classification/plot/케이스 2.png
+Final_EDA/classification/plot/케이스 3.png
+Final_EDA/classification/plot/케이스 4.png
+Final_EDA/classification/plot/케이스 5.png
+Final_EDA/classification/plot/케이스 6.png
+Final_EDA/classification/plot/케이스 7.png
+Final_EDA/classification/classification_module.py
+Final_EDA/classification/plot/feature_importance
+Final_EDA/classification/plot/final
+Final_EDA/classification/plot/radar
 
 # 🔹 Python 관련 불필요한 파일
 __pycache__/
