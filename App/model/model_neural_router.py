@@ -1,0 +1,1 @@
+# final_data에서 올린 데이터(final_neural db)를 받아와서 run_predict_neural_binary, run_predict_neural_multi 함수를 통해서 모델 예측 결과를 받아와서 web 상에 띄우기 위한 router

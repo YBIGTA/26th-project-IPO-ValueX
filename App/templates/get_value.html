@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> IPO_ValueX </title>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', path='css/common.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', path='css/get_value.css') }}">
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    </head>
+    <body>
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <div class="navheader">
+                    <a href = "/mainpage" class = "tomain" >main</a>
+                    <a href = "/get_value" class = "tovalue" id="now" >수익률 예측</a>
+                    <a href = "/suggest_news" class = "tosuggestnews">섹터별 요약뉴스</a>
+                    <a href = "/community" class = "tocommunity">공모주 커뮤니티</a>
+                </div>
+            </nav>
+        </header>
+        <main class="ipo-container">
+            <!-- ✅ 좌측 기업 목록 -->
+            <div class="ipo-list">
+                <h2>
+                    📋 상장 예정 기업 
+                </h2>
+                <ul id="company-list"></ul>
+            </div>
+        
+            <!-- ✅ 우측 기업 정보 -->
+            <div class="ipo-details">
+                <h2>📊 기업 정보</h2>
+                <div id="company-info">기업을 선택하세요.</div>
+            </div>
+        </main>
+
+
+        <script src="{{ url_for('static', path='js/ipo.js') }}"></script>
+        
+        <footer>
+            
+        </footer>
+    </body>
+</html>

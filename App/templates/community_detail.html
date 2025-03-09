@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> IPO_ValueX </title>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{{ url_for('static', path='css/common.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', path='css/community_detail.css') }}">
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    </head>
+    <body>
+        <header>
+            <div class='pagename'>
+                <h1>📈 IPO_ValueX 📉</h1>
+            </div>
+            <nav>
+                <nav>
+                    <div class="navheader">
+                        <a href = "/mainpage" class = "tomain" >main</a>
+                        <a href = "/get_value" class = "tovalue" >수익률 예측</a>
+                        <a href = "/suggest_news" class = "tosuggestnews">섹터별 요약뉴스</a>
+                        <a href = "/community" class = "tocommunity" id="now">공모주 커뮤니티</a>
+                    </div>
+                </nav>
+            </nav>
+        </header>
+    
+    <main>
+        <div class = "community_detail_page">
+            <!-- ✅ 맨 위: 날짜, 글쓴이, 조회수, 추천수 -->
+            <div class="post-meta">
+                <p><strong>📝 작성일:</strong> <span id="post-date"></span></p>
+                <p><strong>👤 글쓴이:</strong> <span id="post-author"></span></p>
+                <p><strong>👀 조회수:</strong> <span id="post-views"></span></p>
+                <p><strong>👍 추천수:</strong> <span id="post-likes"></span></p>
+            </div>
+
+            <!-- ✅ 종목, 제목 -->
+            <div class="post-header">
+                <h2 id="post-title"></h2>
+                <p><strong>📌 종목:</strong> <span id="post-stock"></span></p>
+            </div>
+
+            <!-- ✅ 본문 -->
+            <div class="post-content">
+                <p id="post-body"></p>
+            </div>
+
+            <!-- ✅ 돌아가기 버튼 -->
+            <div class="post-footer">
+                <a href="/community" class="back-button">⬅ 목록으로 돌아가기</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', path='js/community_detail.js') }}"></script>
+</body>
+</html>
