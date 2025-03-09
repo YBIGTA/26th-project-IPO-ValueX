@@ -8,7 +8,8 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Regres
 file_paths = {
     "vol": os.path.join(base_dir, "df_regression_vol_sector.csv"),
     "change": os.path.join(base_dir, "df_regression_change_sector.csv"),
-    "raw": os.path.join(base_dir, "df_regression_raw_sector_latent.csv"),
+    "raw": os.path.join(base_dir, "df_regression_raw_sector.csv"),
+    "latent": os.path.join(base_dir, "autoencoder","latent","latent_features_best.csv")
 }
 
 # 📌 블록 분류 사전 정의
@@ -22,8 +23,7 @@ block_mapping = {
     "산업군시장지수": ["KOSPI_1001", "산업코스피"],
     "커뮤니티종목평가": ["대표매매감정점수"],
     "산업군별뉴스시황": ["호황", "불황"],
-    "종속변수": ["종가대비등락율"],
-    "latent": ["latent_0","latent_1","latent_2","latent_3","latent_4","latent_5","latent_6","latent_7","latent_8","latent_9","latent_10","latent_11","latent_12","latent_13","latent_14","latent_15","latent_16","latent_17","latent_18","latent_19"]
+    "종속변수": ["종가대비등락율"]
 }
 
 # ✅ 최종 저장할 JSON 구조 (데이터 포함)
@@ -31,7 +31,7 @@ final_blocks = {block: [] for block in block_mapping.keys() if block != "거시 
 final_blocks["거시지표_vol"] = []
 final_blocks["거시지표_change"] = []
 final_blocks["거시지표_raw"] = []
-
+final_blocks["latent"] = []
 
 # ✅ 데이터 저장용 리스트 생성
 data_storage = {block: [] for block in final_blocks.keys()}  # 데이터 저장
@@ -65,7 +65,7 @@ for key, file_path in file_paths.items():
                 data_storage[block] = df[available_cols].to_dict(orient="records")
 
 # ✅ JSON 파일 하나로 저장 (데이터 포함)
-json_filename = "regression_block_data_with_latent.json"
+json_filename = "regression_block_data.json"
 with open(json_filename, "w", encoding="utf-8") as f:
     json.dump(data_storage, f, indent=4, ensure_ascii=False)
 
